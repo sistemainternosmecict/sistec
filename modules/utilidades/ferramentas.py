@@ -27,9 +27,15 @@ class Ferramentas:
     def __init__(self) -> None:
         self.__data_hora = datetime.now()
 
-    def gerar_protocolo(self, demanda_id) -> int:
-        self.__data_hora_formatada = self.__data_hora.strftime("%Y%m%d")
-        return int(f"{self.__data_hora_formatada}{demanda_id}")
+    def gerar_protocolo(self) -> int:
+        agora_ano = str(self.__data_hora.year)
+        agora_mes = f'{self.__data_hora.month:02}'
+        agora_dia = f'{self.__data_hora.day:02}'
+        agora_hora = f'{self.__data_hora.hour:02}'
+        agora_minuto = f'{self.__data_hora.minute:02}'
+        agora_segundo = f'{self.__data_hora.second:02}'
+        self.__data_hora_formatada = agora_ano + agora_mes + agora_dia + agora_hora + agora_minuto + agora_segundo
+        return int(self.__data_hora_formatada)
 
     def encriptar_senha(self, senha:str) -> str:
         sha512_hash = hashlib.sha3_512(senha.encode()).hexdigest()

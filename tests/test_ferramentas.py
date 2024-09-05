@@ -6,9 +6,8 @@ def test_ferramentas_instanciando():
     assert isinstance(instancia_ferramentas, Ferramentas)
 
 def test_ferramentas_gera_protocolo_retorna_corretamente():
-    mock_de_id_de_demanda:str = 2024
     instancia_ferramentas = Ferramentas()
-    resultado = instancia_ferramentas.gerar_protocolo(mock_de_id_de_demanda)
+    resultado = instancia_ferramentas.gerar_protocolo()
     assert type(resultado) == int
 
 def test_ferramentas_encripta_senha_corretamente():
