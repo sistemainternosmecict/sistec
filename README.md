@@ -13,4 +13,4 @@ Este repositório é público e nele serāo mantidos:
 - Testes e resultados
 
 ________________________________
-Este repositório, será mantido sib a licença GPL.
+Este repositório, será mantido sob a licença livre GPL.
