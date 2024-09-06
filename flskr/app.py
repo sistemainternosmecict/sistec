@@ -1,19 +1,20 @@
-import sys, os
-from flask import Flask, jsonify
+import sys, os, secrets
+from flask import Flask, jsonify, Blueprint
 
-app = Flask(__name__)
+def create_app():
+    app = Flask(__name__)
 
-app.secret_key = "test"
+    app.secret_key = secrets.token_hex(32)
+    root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.append(os.path.join(root_path, 'modules'))
 
-root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.join(root_path, 'modules'))
+    from .modules.usuarios import bp_usuarios
+    from .modules.demandas import bp_demandas
 
-from ..modules.usuarios import Gerenciador_usuarios
+    bp_api = Blueprint('api', __name__, url_prefix='/api')
 
-@app.route('/', methods=['GET'])
-def index():
-    GU = Gerenciador_usuarios()
-    usuario = GU.carregar_solicitante_via_id(2)
-    # res = usuario['dados']
-    # if 'dados' in usuario:
-    return jsonify({'nome':usuario})
+    bp_api.register_blueprint(bp_usuarios)
+    bp_api.register_blueprint(bp_demandas)
+    app.register_blueprint(bp_api)
+
+    return app

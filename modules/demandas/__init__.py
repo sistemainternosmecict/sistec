@@ -1,6 +1,8 @@
-from models.demandas import Demanda_model
+from ...models.demandas import Demanda_model
+# from models.demandas import Demanda_model #somente nos testes
 from datetime import datetime
-from modules.utilidades.ferramentas import Ferramentas
+from ...modules.utilidades.ferramentas import Ferramentas
+# from modules.utilidades.ferramentas import Ferramentas #somente nos testes
 
 class Demanda:
     def __init__(self, dados: dict):
@@ -16,6 +18,8 @@ class Demanda:
         self.dt_final = None
         self.atendido_por = None
         self.tempo_finalizacao = None
+        if 'protocolo' in dados:
+            self.protocolo = dados['protocolo']
 
     def definir_np(self, np: int):
         self.nvl_prioridade = int(np)
@@ -28,6 +32,7 @@ class Demanda:
 
     def obter_dados(self) -> dict:
         dados = {
+            'protocolo': self.protocolo,
             'nvl_prioridade': self.nvl_prioridade,
             'dt_entrada': self.dt_entrada,
             'solicitante': self.solicitante,
@@ -72,4 +77,52 @@ class Demanda:
         return self.atualizar_demanda({'dem_status': dados['status'], 'protocolo':dados['protocolo']})
 
 class Gerenciador_demandas:
-    pass
+    def __init__(self):
+        self.__demandas_lista = []
+        self.carregar_todas_as_demandas()
+
+    def criar_nova_demanda(self, dados:dict):
+        demanda = Demanda(dados)
+        resultado = demanda.registrar_nova_demanda()
+        if resultado['inserido'] == True:
+            self.__demandas_lista.append(demanda)
+        return resultado
+
+    def agregar_demanda(self, demanda: Demanda) -> dict:
+        self.__demandas_lista.append(demanda)
+        return {'agregada': True}
+
+    def obter_demandas(self) -> list:
+        return self.__demandas_lista
+
+    def obter_demanda_via_protocolo(self, protocolo: int) -> Demanda:
+        for demanda in self.__demandas_lista:
+            if demanda['protocolo'] == protocolo:
+                return Demanda(demanda)
+        return None
+
+    def notificar_colab(self, msg: str) -> bool:
+        ferramenta = Ferramentas()
+        return ferramenta.enviar_mensagem(self.__colaborador, msg)
+
+    def carregar_todas_as_demandas(self):
+        modelo = Demanda_model()
+        demandas_db = modelo.ler_todos()
+        for dados in demandas_db:
+            nova_demanda = Demanda({
+                'protocolo': dados.dem_protocolo,
+                'nvl_prioridade': dados.dem_prioridade,
+                'dt_entrada': dados.dem_dt_entrada,
+                'solicitante': dados.tb_solicitantes_id,
+                'tipo': dados.dem_tipo_demanda,
+                'direcionamento': dados.dem_local,
+                'descricao': dados.dem_descricao,
+                'status': dados.dem_status,
+                'dt_final': dados.dem_dt_final,
+                'atendido_por': dados.dem_atendido_por,
+                'tempo_finalizacao': dados.dem_tempo_finalizacao
+            })
+            self.agregar_demanda(nova_demanda.obter_dados())
+
+    def obter_demandas_via_status(self, status: str) -> list:
+        return [demanda for demanda in self.__demandas_lista if demanda.status == status]

@@ -79,7 +79,7 @@ class Demanda_model(Base):
     def atualizar(self, **kwargs):
         protocolo = kwargs.get('protocolo')
         demanda = self.ler_pelo_protocolo(protocolo)
-        if demanda:
+        if demanda and len(kwargs) > 1:
             for key, value in kwargs.items():
                 setattr(demanda, key, value)
             self.session.commit()

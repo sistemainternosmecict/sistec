@@ -1,6 +1,6 @@
-from models.solicitantes import Solicitante_model
-from models.colaboradores import Colaborador_model
-from modules.utilidades.ferramentas import Ferramentas
+from ...models.solicitantes import Solicitante_model
+from ...models.colaboradores import Colaborador_model
+from ...modules.utilidades.ferramentas import Ferramentas
 
 class Usuario:
     def __init__(self, dados : dict) -> None:
@@ -55,7 +55,7 @@ class Colaborador(Usuario):
     def __init__(self, dados: dict) -> None:
         super().__init__(dados)
         if 'colab_id' in dados:
-            self.__id:int = dados['colab_id']
+            self.id:int = dados['colab_id']
     
     def registrar_colaborador(self, colab_nome_usuario:str, colab_senha:str):
         colab_model = Colaborador_model()
@@ -71,15 +71,18 @@ class Colaborador(Usuario):
 
     def atualizar_colaborador(self, dados:dict) -> dict:
         colab_model = Colaborador_model()
-        colab_model.colab_id = self._Colaborador__id
+        colab_model.colab_id = self.id
         colaborador_atualizado = colab_model.atualizar(**dados)
         return {'atualizado':colaborador_atualizado}
 
     def remover_colaborador(self) -> bool:
         colab_model = Colaborador_model()
-        colab_model.colab_id = self._Colaborador__id
+        colab_model.colab_id = self.id
         colaborador_removido = colab_model.deletar()
         return {'removido':colaborador_removido}
+    
+    def obter_colab(self):
+        return {chave: valor for chave, valor in self.__dict__.items()}
 
 class Autenticador:
     def login(self, credenciais:list):
@@ -131,29 +134,48 @@ class Gerenciador_usuarios:
     def registrar_solicitante(self, dados : dict) -> dict:
         solic = self.construir_solicitante(dados)
         resultado = solic.registrar_solicitante()
-        return {'res':resultado, 'solic':solic}
+        return {'res':resultado}
     
     def registrar_colaborador(self, dados:dict) -> dict:
         colab = self.construir_colaborador(dados)
         resultado = colab.registrar_colaborador(dados['colab_nome_usuario'], dados['colab_senha'])
-        return {'res':resultado, 'colab':colab}
+        return {'res':resultado}
     
     def carregar_solicitante_via_id(self, solic_id : int) -> dict:
         ferramentas = Ferramentas()
         model = Solicitante_model()
         model.solic_id = solic_id
         resultado = model.ler()
-        return {'obj':resultado, 'dados':ferramentas.para_dict(resultado)}
+        return {'dados':ferramentas.para_dict(resultado)}
 
     def carregar_colaborador_via_id(self, colab_id:int) -> object:
         ferramentas = Ferramentas()
         model = Colaborador_model()
         model.colab_id = colab_id
-        resultado = model.ler(colab_id)
-        return {'obj':resultado, 'dados':ferramentas.para_dict(resultado)}
+        resultado = model.ler()
+        retorno = ferramentas.para_dict(resultado)
+        retorno.pop("colab_senha", None)
+        return retorno
     
     def remover_solicitante_via_id(self, solic_id:int) -> dict:
         model = Solicitante_model()
         model.solic_id = solic_id
         resultado = model.deletar()
         return {'removido':resultado}
+    
+    def obter_todos_os_colaboradores(self):
+        usuarios = []
+        model = Colaborador_model()
+        colaboradores = model.let_tudo()
+        for colab in colaboradores:
+            colab_dict = {
+                "colab_id":colab.colab_id,
+                "colab_sala":colab.colab_sala,
+                "colab_nome":colab.colab_sala,
+                "colab_nome_usuario":colab.colab_nome_usuario,
+                "colab_email":colab.colab_email,
+                "colab_telefone":colab.colab_telefone,
+                "colab_ativo":colab.colab_ativo
+            }
+            usuarios.append(colab_dict)
+        return usuarios

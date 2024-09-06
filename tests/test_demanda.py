@@ -6,13 +6,6 @@ def test_demanda_instancianda():
     instancia_demanda = Demanda(dados)
     assert isinstance(instancia_demanda, Demanda)
 
-# def test_demanda_definir_protocolo_funciona():
-#     dados = {'protocolo':0}
-#     instancia_demanda = Demanda(dados)
-#     instancia_demanda.definir_protocolo(1)
-#     dados_obtidos = instancia_demanda.obter_dados()
-#     assert dados_obtidos['protocolo'] == 1
-
 def test_demanda_definir_np_funciona():
     dados = {'nvl_prioridade':0, 'protocolo':0}
     instancia_demanda = Demanda(dados)

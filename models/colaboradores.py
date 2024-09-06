@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, Boolean
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.exc import IntegrityError
-from modules.utilidades.ferramentas import Ferramentas
+from ..modules.utilidades.ferramentas import Ferramentas
 
 Base = declarative_base()
 
@@ -46,12 +46,18 @@ class Colaborador_model(Base):
         except IntegrityError as e:
             self.session.rollback()
             if "UNIQUE constraint failed" in str(e):
-                return { "msg":f"O email '{self.colab_email}' já está cadastrado. Por favor use outro email!", "registro":False }
+                if "colab_email" in str(e):
+                    return { "msg":f"O email '{self.colab_email}' já está cadastrado. Por favor use outro email!", "registro":False }
+                if "colab_senha" in str(e):
+                    return { "msg":f"A senha inserida já está cadastradq. Por favor use outra senha para este usuario!", "registro":False }
             else:
                 return { "msg":"Erro: Não foi possível criar o colaborador devido a um problema desconhecido!", "registro":False }
+            
+    def let_tudo(self) -> list:
+        return self.session.query(Colaborador_model).all()
 
-    def ler(self, colaborador_id) -> object:
-        return self.session.query(Colaborador_model).filter_by(colab_id=colaborador_id).first()
+    def ler(self) -> object:
+        return self.session.query(Colaborador_model).filter_by(colab_id=self.colab_id).first()
     
     def login(self, nome_usuario, senha_hash) -> object:
         return self.session.query(Colaborador_model).filter_by(colab_nome_usuario=nome_usuario, colab_senha=senha_hash).first()
