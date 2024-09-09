@@ -40,6 +40,10 @@ class Solicitante_model(Base):
         resultado = self.session.query(Solicitante_model).filter_by(solic_id=self.solic_id).first()
         return resultado
     
+    def ler_tudo(self):
+        resultado = self.session.query(Solicitante_model).all()
+        return resultado
+    
     def verificar(self, solicitante_nome, solicitante_sala):
         if self.session.query(Solicitante_model).filter_by(solic_nome=solicitante_nome, solic_sala=solicitante_sala).first() != None:
             return True

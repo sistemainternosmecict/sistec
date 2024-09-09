@@ -179,3 +179,18 @@ class Gerenciador_usuarios:
             }
             usuarios.append(colab_dict)
         return usuarios
+    
+    def obter_todos_os_solicitantes(self):
+        usuarios = []
+        model = Solicitante_model()
+        solicitantes = model.ler_tudo()
+        for solic in solicitantes:
+            solic_dict = {
+                "solic_id":solic.solic_id,
+                "solic_nome":solic.solic_sala,
+                "solic_sala":solic.solic_sala,
+                "solic_email":solic.solic_email,
+                "solic_telefone":solic.solic_telefone
+            }
+            usuarios.append(solic_dict)
+        return usuarios
