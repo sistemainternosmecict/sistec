@@ -15,7 +15,7 @@ class Colaborador_model(Base):
     colab_email = Column(String(100), unique=True, nullable=False)
     colab_telefone = Column(String(11))
     colab_senha = Column(String(100), unique=True, nullable=False)
-    colab_ativo = Column(Boolean)
+    colab_ativo = Column(Integer)
 
     def __init__(self):
         self.engine = create_engine('sqlite:///colaboradores.db', echo=True)
@@ -91,7 +91,7 @@ class Colaborador_model(Base):
                 if colab_senha:
                     colaborador.colab_senha = ferramentas.encriptar_senha(colab_senha)
                 if colab_ativo:
-                    colaborador.colab_ativo = colab_ativo
+                    colaborador.colab_ativo = int(colab_ativo)
                 self.session.commit()
                 return True
             except Exception as e:

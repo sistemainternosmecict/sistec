@@ -90,8 +90,8 @@ class Autenticador:
         auth = self.autenticar()
         if auth['auth']:
             if auth['colab'] != None:
-                dados_em_dict = self.modelo_para_dict(auth['colab'])
-                return {'login':True, 'colab':auth['colab'], 'usuario_dict':dados_em_dict}
+                dados_em_dict = self.modelo_para_dict(auth['colab'], ['colab_senha'])
+                return {'auth':True, 'usuario_dict':dados_em_dict}
         return auth
           
     def autenticar(self):
@@ -171,7 +171,7 @@ class Gerenciador_usuarios:
             colab_dict = {
                 "colab_id":colab.colab_id,
                 "colab_sala":colab.colab_sala,
-                "colab_nome":colab.colab_sala,
+                "colab_nome":colab.colab_nome,
                 "colab_nome_usuario":colab.colab_nome_usuario,
                 "colab_email":colab.colab_email,
                 "colab_telefone":colab.colab_telefone,
