@@ -1,0 +1,10 @@
+[run]
+omit = 
+    tests/test_autenticador.py
+    tests/test_colaborador.py
+    tests/test_ferramentas.py
+    tests/test_gerenciador_usuarios.py
+    tests/test_model_colaboradores.py
+    tests/test_model_solicitantes.py
+    tests/test_solicitante.py
+    tests/test_colaborador.py
