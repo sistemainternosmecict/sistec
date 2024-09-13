@@ -1,4 +1,4 @@
-section#main_content{
+section#main_cadastro{
     position: fixed;
     left: 0;
     top: calc(0px + 50px);
@@ -8,7 +8,28 @@ section#main_content{
     display: flex;
     justify-content: center;
 
-    div#btn_menu{
-        align-self: center;
+    
+    form{
+        select{
+            margin: 4px;
+            border: solid 1px #008080;
+            padding: 8px;
+        }
     }
+}
+
+div#btn_menu{
+    margin-top: 64px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 32px;
+
+    button{
+        flex: 256px 1 1;
+    }
+}
+
+section#main_listagem{
+    width: 100%;
 }

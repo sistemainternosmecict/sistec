@@ -6,9 +6,12 @@ from ...modules.utilidades.ferramentas import Ferramentas
 
 class Demanda:
     def __init__(self, dados: dict):
-        data_atual = datetime.now()
         self.nvl_prioridade = dados.get('nvl_prioridade')
-        self.dt_entrada = data_atual.strftime("%d/%m/%Y")
+        if not 'dt_entrada' in dados:
+            data_atual = datetime.now()
+            self.dt_entrada = data_atual.strftime("%d/%m/%Y|%H:%m")
+        else:
+            self.dt_entrada = dados.get("dt_entrada")       
         self.solicitante = dados.get('solicitante')
         self.tipo = dados.get('tipo')
         self.direcionamento = dados.get('direcionamento')
@@ -115,7 +118,7 @@ class Gerenciador_demandas:
                 'dt_entrada': dados.dem_dt_entrada,
                 'solicitante': dados.tb_solicitantes_id,
                 'tipo': dados.dem_tipo_demanda,
-                'direcionamento': dados.dem_local,
+                'direcionamento': dados.tb_colaboradores_id,
                 'descricao': dados.dem_descricao,
                 'status': dados.dem_status,
                 'dt_final': dados.dem_dt_final,

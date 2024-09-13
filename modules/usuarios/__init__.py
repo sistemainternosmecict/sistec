@@ -187,7 +187,7 @@ class Gerenciador_usuarios:
         for solic in solicitantes:
             solic_dict = {
                 "solic_id":solic.solic_id,
-                "solic_nome":solic.solic_sala,
+                "solic_nome":solic.solic_nome,
                 "solic_sala":solic.solic_sala,
                 "solic_email":solic.solic_email,
                 "solic_telefone":solic.solic_telefone

@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { HostContext } from "../../HostContext";
+import './style.scss';
 
 async function EnviarRegistro(dados, host, setMessage){
     const route = "/api/usuarios/colaboradores/registrar"

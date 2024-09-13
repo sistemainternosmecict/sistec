@@ -11,8 +11,8 @@ async function obter_colaboradores(host){
 }
 
 export default function ListagemColab(){
-    const [colaboradores, setColaboradores] = useState([])
     const { hostUrl } = useContext(HostContext)
+    const [colaboradores, setColaboradores] = useState([])
 
     useEffect(() => {
     async function fetchData() {

@@ -64,41 +64,37 @@ def registrar_colaborador():
 
 @bp_solic.route("/listar")
 def obter_solicitantes():
-    if 'usuario' in session:
-        GU = Gerenciador_usuarios()
-        colab = GU.obter_todos_os_solicitantes()
-        return jsonify({'solics':colab})
+    GU = Gerenciador_usuarios()
+    colab = GU.obter_todos_os_solicitantes()
+    return jsonify({'solics':colab})
 
 @bp_solic.route("/buscar/<int:colab_id>")
 def buscar_solicitante(colab_id):
-    if 'usuario' in session:
-        GU = Gerenciador_usuarios()
-        resultado = GU.carregar_solicitante_via_id(colab_id)
-        return jsonify({'colab':resultado})
+    GU = Gerenciador_usuarios()
+    resultado = GU.carregar_solicitante_via_id(colab_id)
+    return jsonify({'solic':resultado})
 
 @bp_solic.route("/atualizar", methods=["POST"])
 def atualizar_solicitante():
-    if 'usuario' in session:
-        dados = request.json
-        GD = Gerenciador_usuarios()
-        solic_dados = GD.carregar_solicitante_via_id(dados['solic_id'])
-        solic = solic_dados['dados']
-        solic['usuario_nome'] = solic.pop('solic_nome')
-        solic['usuario_sala'] = solic.pop('solic_sala')
-        solic['usuario_email'] = solic.pop('solic_email')
-        solic['usuario_telefone'] = solic.pop('solic_telefone')
-        solic_obj = Solicitante(solic)
-        dados.pop("solic_id")
-        resultado = solic_obj.atualizar_solicitante(dados)
-        return jsonify(resultado)
+    dados = request.json
+    GD = Gerenciador_usuarios()
+    solic_dados = GD.carregar_solicitante_via_id(dados['solic_id'])
+    solic = solic_dados['dados']
+    solic['usuario_nome'] = solic.pop('solic_nome')
+    solic['usuario_sala'] = solic.pop('solic_sala')
+    solic['usuario_email'] = solic.pop('solic_email')
+    solic['usuario_telefone'] = solic.pop('solic_telefone')
+    solic_obj = Solicitante(solic)
+    dados.pop("solic_id")
+    resultado = solic_obj.atualizar_solicitante(dados)
+    return jsonify(resultado)
 
 @bp_solic.route("/registrar", methods=["POST"])
 def registrar_solicitante():
-    if 'usuario' in session:
-        dados = request.json
-        GD = Gerenciador_usuarios()
-        resultado = GD.registrar_solicitante(dados)
-        return jsonify(resultado)
+    dados = request.json
+    GD = Gerenciador_usuarios()
+    resultado = GD.registrar_solicitante(dados)
+    return jsonify(resultado)
 
 ###################################
 #

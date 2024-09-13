@@ -31,8 +31,8 @@ export default function Login({ setUsuario,  setLoggedIn }) {
       <>
         <form onSubmit={(e) => login(e, hostUrl, setUsuario, setLoggedIn, setMessage)}>
           <h2>LOGIN</h2>
-          <input type="text" name="colab_nome_usuario" id="colab_nome_usuario" />
-          <input type="text" name="colab_senha" id="colab_senha" />
+          <input type="text" name="colab_nome_usuario" id="colab_nome_usuario" autoComplete='username' />
+          <input type="password" name="colab_senha" id="colab_senha" autoComplete='current-password' />
           <input type="submit" value="Entrar" />
           <p>
             {msg}
