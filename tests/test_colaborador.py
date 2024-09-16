@@ -1,4 +1,4 @@
-from modules.usuarios import Colaborador
+from ..modules.usuarios import Colaborador
 
 mock_dados_colab = {
     "usuario_nome":"thyéz",
@@ -6,6 +6,13 @@ mock_dados_colab = {
     "usuario_email":"thyezolaiveira@gmail.com",
     "usuario_telefone":"22998548514",
     "colab_id":1
+}
+
+mock_dados_colab_default = {
+    "usuario_nome":"root",
+    "usuario_sala":"24",
+    "usuario_email":"root@gmail.com",
+    "usuario_telefone":"0"
 }
 
 def test_colaborador_instanciando():
@@ -70,3 +77,8 @@ def test_solicitante_remover_colaborador_do_banco():
     instancia_colaborador = Colaborador(mock_dados_colab)
     resultado = instancia_colaborador.remover_colaborador()
     assert resultado['removido'] == True
+
+def test_colaborador_registrar_colaborador_default_funciona():
+    instancia_colaborador = Colaborador(mock_dados_colab_default)
+    resultado = instancia_colaborador.registrar_colaborador("root", "test")
+    assert resultado['registro'] == True

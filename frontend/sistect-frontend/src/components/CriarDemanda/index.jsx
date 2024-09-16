@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import { HostContext } from "../../HostContext";
+import './style.scss'
 
 async function obter_solicitantes(host, set){
     const route = "/api/usuarios/solicitantes/listar"
