@@ -1,6 +1,6 @@
-from ...models.solicitantes import Solicitante_model
-from ...models.colaboradores import Colaborador_model
-from ...modules.utilidades.ferramentas import Ferramentas
+from models.solicitantes import Solicitante_model
+from models.colaboradores import Colaborador_model
+from modules.utilidades.ferramentas import Ferramentas
 
 class Usuario:
     def __init__(self, dados : dict) -> None:

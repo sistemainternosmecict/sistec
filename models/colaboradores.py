@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, Boolean
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.exc import IntegrityError
-from ..modules.utilidades.ferramentas import Ferramentas
+from modules.utilidades.ferramentas import Ferramentas
 
 Base = declarative_base()
 

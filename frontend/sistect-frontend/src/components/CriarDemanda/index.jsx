@@ -64,6 +64,10 @@ function obter_servico(e, setServico, setIncidentes){
     }
 }
 
+function abrir_campo_texto(e){
+
+}
+
 export default function CriarDemanda(){
     const [salas, setSalas] = useState([])
     const [solicitantes, setSolicitantes] = useState([])
@@ -74,6 +78,7 @@ export default function CriarDemanda(){
     const [servicos, setServicos] = useState([])
     const [servicoSelecionado, setServicoSelecionado] = useState(undefined)
     const [incidentes, setIncidentes] = useState(undefined)
+    // const [descricao, ]
 
     useEffect(()=> {
         obter_solicitantes(hostUrl, setSolicitantes)
@@ -105,7 +110,7 @@ export default function CriarDemanda(){
         <>
             {(msg === undefined) ?
             <form onSubmit={(e) => criarDemanda(e, hostUrl, setMessage)}>
-                <h2>Criar nova</h2>
+                <h2>Abrir nova</h2>
                 <h2>Demanda</h2>
                 <select name="sala" defaultValue="-" onClick={(e) => obter_sala(e, setSalaSelecionada)}>
                     <option value="-" disabled>Selecione a sala</option>
@@ -140,7 +145,7 @@ export default function CriarDemanda(){
                     <option value="[OUT]">Outro</option>
                 </select>
                 {(servicoSelecionado !== undefined && incidentes !== undefined) ?
-                    <select name="incidente">
+                    <select name="incidente" >
                         {incidentes.map( (inc, idx_inc) => {
                             if(inc !== "Outro"){
                                 return <option value={inc} key={idx_inc}>{inc}</option>

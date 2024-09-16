@@ -1,7 +1,7 @@
-from ...models.demandas import Demanda_model
+from models.demandas import Demanda_model
 # from models.demandas import Demanda_model #somente nos testes
 from datetime import datetime
-from ...modules.utilidades.ferramentas import Ferramentas
+from modules.utilidades.ferramentas import Ferramentas
 # from modules.utilidades.ferramentas import Ferramentas #somente nos testes
 
 class Demanda:

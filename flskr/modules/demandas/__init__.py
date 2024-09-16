@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from ....modules.demandas import Gerenciador_demandas, Demanda
+from modules.demandas import Gerenciador_demandas, Demanda
 
 bp_demandas = Blueprint('demandas', __name__, url_prefix='/demandas')
 

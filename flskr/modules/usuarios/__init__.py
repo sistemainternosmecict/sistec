@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, session
-from ....modules.usuarios import Gerenciador_usuarios, Colaborador, Solicitante, Autenticador
-from ....models.colaboradores import Colaborador_model
+from modules.usuarios import Gerenciador_usuarios, Colaborador, Solicitante, Autenticador
+from models.colaboradores import Colaborador_model
 
 bp_usuarios = Blueprint('usuarios', __name__, url_prefix='/usuarios')
 
