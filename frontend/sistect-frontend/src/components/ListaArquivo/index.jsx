@@ -1,6 +1,5 @@
 import { useState, useContext, useEffect } from "react"
 import { HostContext } from "../../HostContext";
-// import './style.scss';
 import Demanda from '../Demanda'
 
 async function obter_demandas(host){
@@ -27,8 +26,8 @@ export default function ListagemArquivo(){
             <ul id="demandas">
                 {(demandas) ? demandas.map((demanda, index) => (
                     <li key={index}>
-                        {((demanda.status === 5) || (demanda.status === 6)) ? 
-                        <Demanda demanda={demanda} />
+                        {((demanda.status === 5) || (demanda.status === 6)) 
+                        ? <Demanda demanda={demanda} />
                         :<></>}
                     </li>
                 )) : <p>Não há demandas cadastradas!</p>}

@@ -1,7 +1,7 @@
 section#main_cadastro{
     position: fixed;
     left: 0;
-    top: calc(0px + 50px);
+    top: calc(0px + 80px);
     width: 100%;
     height: 100vh;
     overflow-y: scroll;
@@ -15,6 +15,9 @@ div#btn_menu{
     flex-direction: row;
     flex-wrap: wrap;
     margin: 32px;
+    margin-top: 128px;
+    width: 100%;
+    max-width: 1024px;
 
     button{
         flex: 256px 1 1;
@@ -23,4 +26,5 @@ div#btn_menu{
 
 section#main_listagem{
     width: 100%;
+    margin-top: 128px;
 }

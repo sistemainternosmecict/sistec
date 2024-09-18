@@ -13,7 +13,6 @@ async function buscar_colaborador_por_id( id, host ){
     const route = `/api/usuarios/colaboradores/buscar/${id}`
     const result = await fetch(host+route);
     const retorno = await result.json();
-    console.log(retorno.colab.colab_nome)
     return retorno.colab
 }
 
@@ -40,9 +39,9 @@ async function atualizar_status(protocolo, status, host, func, setDemandas, dema
     const dados = {
         "protocolo": protocolo,
         "dem_status": status,
-        "dem_dt_final": (status == 5) ? dataFormatada : null,
-        "dem_tempo_finalizacao": (status == 5) ? diff.dias : null,
-        "dem_atendido_por": (status === 5) ? buscar_colaborador_por_id(demanda.direcionamento, host).colab.colab_nome : null
+        "dem_dt_final": (status === 5 || status === 6) ? dataFormatada : null,
+        "dem_tempo_finalizacao": (status === 5 || status === 6) ? diff.dias : null,
+        "dem_atendido_por": (status === 5 || status === 6) ? buscar_colaborador_por_id(demanda.direcionamento, host).colab.colab_nome : null
     }
     const route = "/api/demandas/atualizar"
     const options = {
@@ -123,53 +122,68 @@ export default function Demanda({ demanda, func, setDemandas }){
     }, [hostUrl])
 
     return (<>
-        {(solicitante) ? <div className="demanda_card">
+        {(solicitante) ? <div className="demanda_card arquivo">
             <p><span>PROTOCOLO: </span>{demanda.protocolo}</p>
             <p><span>Data e hora: </span>{demanda.dt_entrada}</p>
 
-            <p><span>Solicitante: </span>{solicitante.solic_nome + " da sala " + solicitante.solic_sala}</p>
+            <p><span>Solicitante: </span>{solicitante.solic_nome + " da sala " + solicitante.solic_sala} | <span>NP: </span> {demanda.nvl_prioridade}</p>
             <p><span>Descrição: </span> {demanda.descricao}</p>
 
-            {(demanda.status < 5) ? <>
-                
-                <select name="prioridade" 
-                defaultValue={demanda.nvl_prioridade} onChange={(e) => 
-                atualizar_prioridade(demanda.protocolo, e.target.value, hostUrl, func, setDemandas)}>
-                    <option 
-                    value={0} 
-                    disabled="disabled">NP</option>
-                    <option 
-                    value={1} 
-                    disabled={(demanda.nvl_prioridade === 1) ? "disabled" : ""}>P1</option>
-                    <option 
-                    value={2} 
-                    disabled={(demanda.nvl_prioridade === 2) ? "disabled" : ""}>P2</option>
-                    <option 
-                    value={3} 
-                    disabled={(demanda.nvl_prioridade === 3) ? "disabled" : ""}>P3</option>
-                </select>
+            <div className="drops">
 
-                <select name="direct" onChange={(e) => 
-                atualizar_direcionamento(demanda.protocolo, e.target.value, hostUrl, func, setDemandas)} 
-                defaultValue={(demanda.direcionamento !== 0) ? demanda.direcionamento : 0}>
-                    <option value={0} disabled>Direcionamento</option>
-                    {colabs.map( colab => <option value={colab.colab_id} key={colab.colab_id}>{colab.colab_nome}</option>)}
-                </select>
+                {(demanda.status < 5) ? <>
+                    
+                    <select name="prioridade" 
+                    defaultValue={demanda.nvl_prioridade} onChange={(e) => 
+                    atualizar_prioridade(demanda.protocolo, e.target.value, hostUrl, func, setDemandas)}>
+                        <option 
+                        value={0} 
+                        disabled="disabled">NP</option>
+                        <option 
+                        value={1} 
+                        disabled={(demanda.nvl_prioridade === 1) ? "disabled" : ""}>P1</option>
+                        <option 
+                        value={2} 
+                        disabled={(demanda.nvl_prioridade === 2) ? "disabled" : ""}>P2</option>
+                        <option 
+                        value={3} 
+                        disabled={(demanda.nvl_prioridade === 3) ? "disabled" : ""}>P3</option>
+                    </select>
 
-                <select name="status" 
-                defaultValue={demanda.status} 
-                onChange={(e) => atualizar_status(demanda.protocolo, e.target.value, hostUrl, func, setDemandas, demanda)}>
-                    {(demanda.status === 1)? <option value={1} disabled={(demanda.status === 1) ? "disabled" : ""}>Nova demanda</option> : <></>}
-                    <option value={2} disabled={(demanda.status === 2) ? "disabled" : ""}>Em andamento</option>
-                    <option value={3} disabled={(demanda.status === 3) ? "disabled" : ""}>Aguardando</option>
-                    <option value={4} disabled={(demanda.status === 4) ? "disabled" : ""}>Encaminhado</option>
-                    {((demanda.status === 2) || (demanda.status === 3) || (demanda.status === 4))
-                    ? <>
-                        <option value={5}>Finalizado</option>
-                        <option value={6}>Encerrado</option></>
-                    : <></>}
-                </select>
-            </> : <>{(demanda.status === 5) ? "[FINALIZADA]" : "[ENCERRADA]"}</>}
+                    <select name="direct" onChange={(e) => 
+                    atualizar_direcionamento(demanda.protocolo, e.target.value, hostUrl, func, setDemandas)} 
+                    defaultValue={(demanda.direcionamento !== 0) ? demanda.direcionamento : 0}>
+                        <option value={0} disabled>Direcionamento</option>
+                        {colabs.map( colab => <option value={colab.colab_id} key={colab.colab_id}>{colab.colab_nome}</option>)}
+                    </select>
+
+                    <select name="status" 
+                    defaultValue={demanda.status} 
+                    onChange={(e) => atualizar_status(demanda.protocolo, e.target.value, hostUrl, func, setDemandas, demanda)}>
+                        {(demanda.status === 1)? <option value={1} disabled={(demanda.status === 1) ? "disabled" : ""}>Nova demanda</option> : <></>}
+                        <option value={2} disabled={(demanda.status === 2) ? "disabled" : ""}>Em andamento</option>
+                        <option value={3} disabled={(demanda.status === 3) ? "disabled" : ""}>Aguardando</option>
+                        <option value={4} disabled={(demanda.status === 4) ? "disabled" : ""}>Encaminhado</option>
+                        {((demanda.status === 2) || (demanda.status === 3) || (demanda.status === 4))
+                        ? <>
+                            <option value={5}>Finalizado</option>
+                            <option value={6}>Encerrado</option></>
+                        : <></>}
+                    </select>
+                </> : <>{(demanda.status === 5) 
+                ? <>
+                    <strong>
+                        FINALIZADA 
+                    </strong> em: {demanda.dt_final}
+                    {/* <p>Levou {demanda.tempo_finalizacao} dias.</p> */}
+                </>
+                : <>
+                <strong>
+                    ENCERRADA 
+                </strong> em: {demanda.dt_final}
+            </>
+            }</>}
+            </div>
 
         </div> : <></>}
     </>)

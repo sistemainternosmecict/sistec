@@ -1,5 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { HostContext } from "../../HostContext";
+import escolas_json from './escolas.json';
+import servicos_json from './tipos_servicos.json';
 import './style.scss'
 
 async function obter_solicitantes(host, set){
@@ -19,7 +21,7 @@ async function registrar_demanda( demanda, host, setMessage ){
     const result = await fetch(host+route, options);
     const retorno = await result.json();
     if(retorno.inserido){
-        const message = "Demanda inserida! Protocolo de demanda número " + retorno.protocolo + " gerado com sucesso!"
+        const message = retorno.protocolo
         setMessage(message)
     }
 }
@@ -27,7 +29,8 @@ async function registrar_demanda( demanda, host, setMessage ){
 function criarDemanda(e, host, setMessage){
     e.preventDefault()
     const fields = e.target.elements
-    const desc = fields[2].value + fields[2].options[fields[2].selectedIndex].text + " -> " + fields[3].value
+    const descricao_escrita = (fields[4].value) ? fields[4].value : "S/D"
+    const desc = fields[2].value + fields[2].options[fields[2].selectedIndex].text + " -> " + fields[3].value + " (" + descricao_escrita + ")."
     const local = fields[0].value
     const demanda = {
         solicitante: Number(fields[1].value),
@@ -46,11 +49,7 @@ function criarDemanda(e, host, setMessage){
 function obter_sala(e, set){
     e.preventDefault()
     if(e.target.value !== "-"){
-        if(e.target.value !== "unidade"){
-            set(Number(e.target.value))
-        } else {
-            set(e.target.value)
-        }
+        set(e.target.value)
     }
 }
 
@@ -64,8 +63,12 @@ function obter_servico(e, setServico, setIncidentes){
     }
 }
 
-function abrir_campo_texto(e){
-
+function abrir_campo_texto( e, setDescricao ){
+    if(e.target.value === "Outro"){
+        setDescricao(true)
+    } else {
+        setDescricao(false)
+    }
 }
 
 export default function CriarDemanda(){
@@ -78,7 +81,7 @@ export default function CriarDemanda(){
     const [servicos, setServicos] = useState([])
     const [servicoSelecionado, setServicoSelecionado] = useState(undefined)
     const [incidentes, setIncidentes] = useState(undefined)
-    // const [descricao, ]
+    const [descricao, setDescricao] = useState(false)
 
     useEffect(()=> {
         obter_solicitantes(hostUrl, setSolicitantes)
@@ -87,23 +90,16 @@ export default function CriarDemanda(){
     useEffect(() => {
         let salas_temp = []
         solicitantes.forEach( solic => {
-            if(!salas_temp.includes(Number(solic.solic_sala))){
-                salas_temp.push(Number(solic.solic_sala))
+            if(!salas_temp.includes(solic.solic_sala)){
+                salas_temp.push(solic.solic_sala)
             }
         })
         setSalas(salas_temp)
     }, [solicitantes])
 
     useEffect(() => {
-        fetch('./escolas.json')
-            .then( resp => resp.json())
-            .then( dados => setEscolas(dados))
-            .catch( error => console.log("Erro ao carregar arquivo JSON de escolas", error))
-
-        fetch('./tipos_servicos.json')
-            .then( resp => resp.json())
-            .then( dados => setServicos(dados))
-            .catch( error => console.log("Erro ao carregar arquivo JSON de tipos de serviços", error))
+        setEscolas(escolas_json)
+        setServicos(servicos_json)
     }, [])
 
     return (
@@ -127,7 +123,7 @@ export default function CriarDemanda(){
                     <select name="solic" defaultValue="-">
                     <option value="-" disabled>Selecione o seu nome</option>
                     {solicitantes.map( solic => {
-                        if(Number(solic.solic_sala) === salaSelecionada){
+                        if(solic.solic_sala === salaSelecionada){
                             return <option key={solic.solic_id} value={solic.solic_id}>{solic.solic_nome}</option>
                         }
                     })}
@@ -145,24 +141,23 @@ export default function CriarDemanda(){
                     <option value="[OUT]">Outro</option>
                 </select>
                 {(servicoSelecionado !== undefined && incidentes !== undefined) ?
-                    <select name="incidente" >
+                    <select name="incidente" onChange={(e) => abrir_campo_texto(e, setDescricao)}>
                         {incidentes.map( (inc, idx_inc) => {
-                            if(inc !== "Outro"){
-                                return <option value={inc} key={idx_inc}>{inc}</option>
-                            } else {
-                                return <option value={inc} key={idx_inc} onClick={() => abrir_campo_texto()}>{inc}</option>
-                            }
+                            return <option value={inc} key={idx_inc}>{inc}</option>
                         })}
                     </select> : <></>}
-                <input type="submit" value="Criar" />
-            </form> : <form>
-                {msg}
+                {(descricao) ? <textarea name="descricao" placeholder="Por favor, descreva brevemente o problema ocorrido com suas palavras."></textarea> : <></>}
+                <input type="submit" />
+            </form> : <div id="protocolo">
+                <p>
+                Demanda inserida! Protocolo de demanda número <strong>{msg}</strong> gerado com sucesso!
+                </p>
                 <button onClick={() => {
                     setServicoSelecionado(undefined)
                     setIncidentes(undefined)
                     setMessage(undefined)
                     }}>Criar outra demanda</button>
-                </form>}
+                </div>}
         </>
     )
 }

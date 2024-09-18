@@ -3,13 +3,13 @@ import { useState } from "react";
 function ativar(e, id, setEstado){
     const novo_estado = true
     setEstado(novo_estado)
-    console.log(" colaborador de id ", id, " ativado!")
+    // console.log(" colaborador de id ", id, " ativado!")
 }
 
 function desativar(e, id, setEstado){
     const novo_estado = false
     setEstado(novo_estado)
-    console.log("Colaborador de id ", id, " desativado!")
+    // console.log("Colaborador de id ", id, " desativado!")
 }
 
 export default function Colaborador({ colaborador}){

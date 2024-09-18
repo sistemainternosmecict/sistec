@@ -44,9 +44,8 @@
         ]
     },
     {
-        "etiqueta":"Outros dispositivos",
+        "etiqueta":"Chromebook",
         "servicos":[
-            { "cod":"[CTV]", "opc":"Cabo de Energia TV 75\"", "incidentes":["Defeituoso"]  },
             { "cod":"[CBP]", "opc":"Chromebook Professor", "incidentes":[
                 "Não liga",
                 "Travando",
@@ -63,7 +62,35 @@
                 "Com senha desconhecida",
                 "Sem internet",
                 "Outro"
+                ]  },
+            { "cod":"[EDC]", "opc":"EduCharge Chromebook", "incidentes":[
+                "Não liga",
+                "Não passa carga",
+                "Porta não fecha/abre",
+                "Tomada inadequada",
+                "Outro"
+            ]  }
+        ]
+    },
+    {
+        "etiqueta":"TV 75\"",
+        "servicos":[
+            { "cod":"[CTV]", "opc":"Cabo de Energia TV 75\"", "incidentes":["Defeituoso"]  },
+            { "cod":"[STV]", "opc":"Suporte TV 75\" Samsung", "incidentes":[
+                "Defeituoso"
             ]  },
+            { "cod":"[TVS]", "opc":"TV Interativa 75\" Samsung", "incidentes":[
+                "Não liga",
+                "Travando",
+                "Liga mas sem sinal na tela",
+                "Não conecta",
+                "Outro"
+            ]} 
+        ]
+    },
+    {
+        "etiqueta":"Outros dispositivos",
+        "servicos":[
             { "cod":"[IMP]", "opc":"Impressora", "incidentes":[
                 "Não liga",
                 "Travando",
@@ -88,13 +115,6 @@
                 "Desconectada",
                 "Outro"
             ]  },
-            { "cod":"[EDC]", "opc":"EduCharge Chromebook", "incidentes":[
-                "Não liga",
-                "Não passa carga",
-                "Porta não fecha/abre",
-                "Tomada inadequada",
-                "Outro"
-            ]  },
             { "cod":"[NPS]", "opc":"Notebook Professor Samsung", "incidentes":[
                 "Não liga",
                 "Travando",
@@ -104,17 +124,7 @@
                 "Instalar TIX",
                 "Sem internet",
                 "Outro"
-            ] },
-            { "cod":"[STV]", "opc":"Suporte TV 75\" Samsung", "incidentes":[
-                "Defeituoso"
-            ]  },
-            { "cod":"[TVS]", "opc":"TV Interativa 75\" Samsung", "incidentes":[
-                "Não liga",
-                "Travando",
-                "Liga mas sem sinal na tela",
-                "Não conecta",
-                "Outro"
-            ]}
+            ] }
         ]
     },
     {

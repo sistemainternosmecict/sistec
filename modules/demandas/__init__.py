@@ -18,11 +18,14 @@ class Demanda:
         self.local = dados.get('local')
         self.descricao = dados.get('descricao')
         self.status = dados.get('status')
-        self.dt_final = None
         self.atendido_por = None
-        self.tempo_finalizacao = None
+
         if 'protocolo' in dados:
             self.protocolo = dados['protocolo']
+        if 'dt_final' in dados:
+            self.dt_final = dados['dt_final']
+        if 'tempo_finalizacao' in dados:
+            self.tempo_finalizacao = dados['tempo_finalizacao']
 
     def definir_np(self, np: int):
         self.nvl_prioridade = int(np)

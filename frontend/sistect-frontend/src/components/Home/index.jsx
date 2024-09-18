@@ -52,7 +52,7 @@ function get_page(page_number, usuario, setPage){
                 <ButtonBase text="Listar colaboradores" func={{setPage}} page_number={2}/>
                 <ButtonBase text="Registrar Solicitante" func={{setPage}} page_number={3}/>
                 <ButtonBase text="Listar solicitantes" func={{setPage}} page_number={4}/>
-                <ButtonBase text="Criar demanda" func={{setPage}} page_number={5}/>
+                <ButtonBase text="Registrar demanda" func={{setPage}} page_number={5}/>
                 <ButtonBase text="Lista de entrada" func={{setPage}} page_number={6}/>
                 <ButtonBase text="Lista de atendimento" func={{setPage}} page_number={7}/>
                 <ButtonBase text="Arquivo de demandas" func={{setPage}} page_number={8}/>

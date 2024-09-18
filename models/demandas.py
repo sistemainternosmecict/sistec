@@ -12,7 +12,7 @@ class Demanda_model(Base):
     dem_dt_entrada = Column(String(20))
     dem_tipo_demanda = Column(Integer)
     dem_local = Column(String(20))
-    dem_descricao = Column(String(100))
+    dem_descricao = Column(String(300))
     dem_status = Column(Integer)
     dem_prioridade = Column(Integer)
     dem_dt_final = Column(String(20))
