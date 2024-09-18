@@ -12,5 +12,6 @@ Este repositório é público e nele serāo mantidos:
 - Código-fonte
 - Testes e resultados
 
+Este projeto encontra-se na versão 1.1.0
 ________________________________
 Este repositório, será mantido sob a licença livre GPL.
