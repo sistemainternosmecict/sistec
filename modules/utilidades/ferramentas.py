@@ -56,4 +56,7 @@ class Ferramentas:
     def para_dict(self, obj:object, excluir_campos:list=None) -> dict:
         if excluir_campos is None:
             excluir_campos = []
-        return {column.name: getattr(obj, column.name) for column in obj.__table__.columns if column.name not in excluir_campos}
+        if hasattr(obj, '__table__'):
+            return {column.name: getattr(obj, column.name) for column in obj.__table__.columns if column.name not in excluir_campos}
+        else:
+            return obj.__dict__

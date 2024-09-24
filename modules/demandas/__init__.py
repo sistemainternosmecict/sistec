@@ -7,25 +7,33 @@ from modules.utilidades.ferramentas import Ferramentas
 class Demanda:
     def __init__(self, dados: dict):
         self.nvl_prioridade = dados.get('nvl_prioridade')
+        self.solicitante = dados.get('solicitante')
+        self.tipo = dados.get('tipo')
+        self.direcionamento = dados.get('direcionamento')
+        self.descricao = dados.get('descricao')
+
+
         if not 'dt_entrada' in dados:
             data_atual = datetime.now()
             self.dt_entrada = data_atual.strftime("%d/%m/%Y|%H:%m")
         else:
-            self.dt_entrada = dados.get("dt_entrada")       
-        self.solicitante = dados.get('solicitante')
-        self.tipo = dados.get('tipo')
-        self.direcionamento = dados.get('direcionamento')
-        self.local = dados.get('local')
-        self.descricao = dados.get('descricao')
-        self.status = dados.get('status')
-        self.atendido_por = None
-
+            self.dt_entrada = dados.get("dt_entrada")  
+        if 'local' in dados:
+            self.local = dados['local']
+        if 'sala' in dados:
+            self.sala = dados['sala']
         if 'protocolo' in dados:
             self.protocolo = dados['protocolo']
         if 'dt_final' in dados:
             self.dt_final = dados['dt_final']
         if 'tempo_finalizacao' in dados:
             self.tempo_finalizacao = dados['tempo_finalizacao']
+        if 'atendido_por' in dados:
+            self.atendido_por = dados['atendido_por']
+        if 'observacoes' in dados:
+            self.observacoes = dados['observacoes']
+        if 'status' in dados:
+            self.status = dados['status']
 
     def definir_np(self, np: int):
         self.nvl_prioridade = int(np)
@@ -45,11 +53,13 @@ class Demanda:
             'tipo': self.tipo,
             'direcionamento': self.direcionamento,
             'local': self.local,
+            'sala': self.sala,
             'descricao': self.descricao,
             'status': self.status,
             'dt_final': self.dt_final,
             'atendido_por': self.atendido_por,
-            'tempo_finalizacao': self.tempo_finalizacao
+            'tempo_finalizacao': self.tempo_finalizacao,
+            'observacoes': self.observacoes,
         }
         
         return dados
@@ -63,8 +73,9 @@ class Demanda:
         modelo.dem_dt_entrada=self.dt_entrada
         modelo.dem_tipo_demanda=self.tipo
         modelo.dem_local=self.local
+        modelo.dem_sala=self.sala
         modelo.dem_descricao=self.descricao
-        modelo.dem_status=1
+        modelo.dem_status=self.status
         modelo.dem_prioridade=self.nvl_prioridade
         modelo.dem_dt_final=None
         modelo.dem_atendido_por=None
@@ -79,8 +90,8 @@ class Demanda:
             return modelo.atualizar(**dados)
 
     def finalizar_demanda(self, dados: dict):
-        self.definir_status(dados['status'])
-        return self.atualizar_demanda({'dem_status': dados['status'], 'protocolo':dados['protocolo']})
+        self.definir_status(dados['dem_status'])
+        return self.atualizar_demanda(dados)
 
 class Gerenciador_demandas:
     def __init__(self):
@@ -121,12 +132,15 @@ class Gerenciador_demandas:
                 'dt_entrada': dados.dem_dt_entrada,
                 'solicitante': dados.tb_solicitantes_id,
                 'tipo': dados.dem_tipo_demanda,
+                'local': dados.dem_local,
+                'sala': dados.dem_sala,
                 'direcionamento': dados.tb_colaboradores_id,
                 'descricao': dados.dem_descricao,
                 'status': dados.dem_status,
                 'dt_final': dados.dem_dt_final,
                 'atendido_por': dados.dem_atendido_por,
-                'tempo_finalizacao': dados.dem_tempo_finalizacao
+                'tempo_finalizacao': dados.dem_tempo_finalizacao,
+                'observacoes': dados.dem_observacoes
             })
             self.agregar_demanda(nova_demanda.obter_dados())
 

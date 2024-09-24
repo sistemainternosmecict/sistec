@@ -10,8 +10,10 @@ class Demanda_model(Base):
     tb_solicitantes_id = Column(Integer)
     tb_colaboradores_id = Column(Integer)
     dem_dt_entrada = Column(String(20))
+    dem_dt_atendimento = Column(String(20))
     dem_tipo_demanda = Column(Integer)
-    dem_local = Column(String(20))
+    dem_local = Column(String(80))
+    dem_sala = Column(String(30))
     dem_descricao = Column(String(300))
     dem_status = Column(Integer)
     dem_prioridade = Column(Integer)
@@ -36,6 +38,7 @@ class Demanda_model(Base):
             dem_dt_entrada={self.dem_dt_entrada},
             dem_tipo_demanda={self.dem_tipo_demanda},
             dem_local={self.dem_local},
+            dem_sala={self.dem_sala},
             dem_descricao={self.dem_descricao},
             dem_status={self.dem_status},
             dem_prioridade={self.dem_prioridade},
@@ -59,7 +62,7 @@ class Demanda_model(Base):
         return self.session.query(Demanda_model).filter_by(dem_local=local).all()
 
     def ler_com_filtro_prioridade(self, prioridade):
-        return self.session.query(Demanda_model).filter_by(dem_dt_final=prioridade).all()
+        return self.session.query(Demanda_model).filter_by(dem_prioridade=prioridade).all()
 
     def inserir(self):
         try:
@@ -75,13 +78,16 @@ class Demanda_model(Base):
         if demanda:
             self.session.delete(demanda)
             self.session.commit()
+            return {'removido':True}
 
     def atualizar(self, **kwargs):
+        modificado = []
         protocolo = kwargs.get('protocolo')
         demanda = self.ler_pelo_protocolo(protocolo)
         if demanda and len(kwargs) > 1:
             for key, value in kwargs.items():
                 setattr(demanda, key, value)
+                modificado.append(key)
             self.session.commit()
-            return {'atualizado':True}
+            return {'atualizado':True, 'modificado':modificado}
         return {'atualizado':False}
