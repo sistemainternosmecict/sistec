@@ -60,3 +60,61 @@ class Ferramentas:
             return {column.name: getattr(obj, column.name) for column in obj.__table__.columns if column.name not in excluir_campos}
         else:
             return obj.__dict__
+        
+    def prepara_demanda_para_insercao_planilha( self, protocolo, dados ) -> list:
+        tipo = self.acertar_tipo_demanda(int(dados['tipo']))
+        retorno = [
+            protocolo,
+            "0",
+            self.__data_hora.strftime("%d/%m/%Y"),
+            "-",
+            dados['solicitante'],
+            tipo,
+            dados['direcionamento'],
+            dados['local'],
+            dados['sala'],
+            dados['descricao'],
+            "Nova demanda"
+        ]
+
+        return retorno
+    
+    def prepara_demanda_para_atualizacao_planilha( self, dados ) -> list:
+        tipo = self.acertar_tipo_demanda(int(dados['tipo']))
+        retorno = [
+            dados['protocolo'],
+            dados['nvl_prioridade'],
+            dados['dt_entrada'],
+            "-",
+            dados['solicitante'],
+            self.acertar_tipo_demanda(dados['tipo']),
+            dados['direcionamento'],
+            dados['local'],
+            dados['sala'],
+            dados['descricao'],
+            dados['status']
+        ]
+
+        return retorno
+    
+    def acertar_tipo_demanda(self, tipo_int:int) -> str:
+        match tipo_int:
+            case 1:
+                return "Interna"
+            case 2:
+                return "Externa"
+            
+    def acertar_status_demanda(self, status_int:int) -> str:
+        match status_int:
+            case 1:
+                return "Nova demanda"
+            case 2:
+                return "andamento"
+            case 3:
+                return "aguardando"
+            case 4:
+                return "encaminhada"
+            case 5:
+                return "finalizada"
+            case 6:
+                return "encerrada"

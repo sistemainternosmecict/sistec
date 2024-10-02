@@ -4,7 +4,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 class Autenticador:
     _ESCOPOS = ['https://spreadsheets.google.com/feeds',
     'https://www.googleapis.com/auth/drive']
-    _file_path = "../controledemandasti.json"
+    _file_path = "./controledemandasti.json"
 
     def __init__(self) -> None:
         self._root_path = os.getcwd()
