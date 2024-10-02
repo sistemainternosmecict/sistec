@@ -15,7 +15,9 @@ class Demanda:
             data_atual = datetime.now()
             self.dt_entrada = data_atual.strftime("%d/%m/%Y|%H:%m")
         else:
-            self.dt_entrada = dados.get("dt_entrada")  
+            self.dt_entrada = dados.get("dt_entrada")
+        if 'dt_atendimento' in dados:
+            self.dt_atendimento = dados['dt_atendimento']
         if 'local' in dados:
             self.local = dados['local']
         if 'sala' in dados:
@@ -47,6 +49,7 @@ class Demanda:
             'protocolo': self.protocolo,
             'nvl_prioridade': self.nvl_prioridade,
             'dt_entrada': self.dt_entrada,
+            'dt_atendimento': self.dt_atendimento,
             'solicitante': self.solicitante,
             'tipo': self.tipo,
             'direcionamento': self.direcionamento,
@@ -69,6 +72,7 @@ class Demanda:
         modelo.tb_solicitantes_id=self.solicitante
         modelo.tb_colaboradores_id=self.direcionamento
         modelo.dem_dt_entrada=self.dt_entrada
+        modelo.dem_dt_atendimento="-"
         modelo.dem_tipo_demanda=self.tipo
         modelo.dem_local=self.local
         modelo.dem_sala=self.sala
@@ -128,6 +132,7 @@ class Gerenciador_demandas:
                 'protocolo': dados.dem_protocolo,
                 'nvl_prioridade': dados.dem_prioridade,
                 'dt_entrada': dados.dem_dt_entrada,
+                'dt_atendimento': dados.dem_dt_atendimento,
                 'solicitante': dados.tb_solicitantes_id,
                 'tipo': dados.dem_tipo_demanda,
                 'local': dados.dem_local,
