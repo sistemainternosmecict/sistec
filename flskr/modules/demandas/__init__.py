@@ -3,14 +3,25 @@ from modules.demandas import Gerenciador_demandas
 from modules.demandas.autenticadorGDrive import Autenticador
 from modules.demandas.gsheet import GSheetManager
 from modules.utilidades.ferramentas import Ferramentas
+from models.colaboradores import Colaborador_model
 import threading
 
 bp_demandas = Blueprint('demandas', __name__, url_prefix='/demandas')
+
+def obter_colaborador_por_id( id_colaborador:int):
+        colab_model = Colaborador_model()
+        colab_model.colab_id = id_colaborador
+        colab = colab_model.ler()
+        if id_colaborador != 0:
+            return colab.colab_nome
+        return "N/D"
 
 def executar_insercao_demanda( resultado_insercao:dict, dados:dict):
     FERRAMENTAS = Ferramentas()
     AUTH = Autenticador()
     GSHEET = GSheetManager("controle_demandas", "entrada", AUTH.obter_cliente())
+    dados['direcionamento'] = obter_colaborador_por_id(dados['direcionamento'])
+    dados['tipo'] = FERRAMENTAS.acertar_tipo_demanda(dados['tipo'])
     dados_formatados = FERRAMENTAS.prepara_demanda_para_insercao_planilha(resultado_insercao['protocolo'], dados)
     GSHEET.inserir_dados(dados_formatados)
 
@@ -31,13 +42,6 @@ def executar_troca_status_demanda( demanda, dados ):
         GSHEET = GSheetManager("controle_demandas", "demandas", AUTH.obter_cliente())
         linha_n = GSHEET.obter_linha_pelo_protocolo(demanda_formatada[0])
         GSHEET.atualizar_status(linha_n, status)
-        
-    if linha_n != None:
-        if dados['dem_status'] > 1 and dados['dem_status'] < 5:
-            GSHEET.transferir_dados_entre_abas(linha_n, "demandas")
-        elif dados['dem_status'] >= 5:
-            GSHEET.transferir_dados_entre_abas(linha_n, "os_finalizadas")
-
 
 @bp_demandas.route("/listar")
 def obter_demandas():

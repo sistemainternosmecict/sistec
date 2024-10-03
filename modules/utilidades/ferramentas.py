@@ -1,5 +1,6 @@
 import hashlib
 from datetime import datetime
+from models.solicitantes import Solicitante_model
 
 class Mensageiro:
     def __init__(self) -> None:
@@ -62,14 +63,13 @@ class Ferramentas:
             return obj.__dict__
         
     def prepara_demanda_para_insercao_planilha( self, protocolo, dados ) -> list:
-        tipo = self.acertar_tipo_demanda(int(dados['tipo']))
         retorno = [
             protocolo,
             "0",
             self.__data_hora.strftime("%d/%m/%Y"),
             "-",
-            dados['solicitante'],
-            tipo,
+            self.obter_solicitante_por_id(dados['solicitante']),
+            dados['tipo'],
             dados['direcionamento'],
             dados['local'],
             dados['sala'],
@@ -80,14 +80,13 @@ class Ferramentas:
         return retorno
     
     def prepara_demanda_para_atualizacao_planilha( self, dados ) -> list:
-        tipo = self.acertar_tipo_demanda(int(dados['tipo']))
         retorno = [
             dados['protocolo'],
             dados['nvl_prioridade'],
             dados['dt_entrada'],
             "-",
-            dados['solicitante'],
-            self.acertar_tipo_demanda(dados['tipo']),
+            self.obter_solicitante_por_id(dados['solicitante']),
+            dados['tipo'],
             dados['direcionamento'],
             dados['local'],
             dados['sala'],
@@ -99,9 +98,9 @@ class Ferramentas:
     
     def acertar_tipo_demanda(self, tipo_int:int) -> str:
         match tipo_int:
-            case 1:
+            case 0:
                 return "Interna"
-            case 2:
+            case 1:
                 return "Externa"
             
     def acertar_status_demanda(self, status_int:int) -> str:
@@ -118,3 +117,9 @@ class Ferramentas:
                 return "finalizada"
             case 6:
                 return "encerrada"
+            
+    def obter_solicitante_por_id( self, id_solicitante:int) -> str:
+        solic_model = Solicitante_model()
+        solic_model.solic_id = id_solicitante
+        solic = solic_model.ler()
+        return solic.solic_nome
