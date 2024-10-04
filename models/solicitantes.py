@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine, Column, Integer, String, Boolean
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.exc import IntegrityError
 
@@ -12,6 +12,9 @@ class Solicitante_model(Base):
     solic_sala = Column(String(4), nullable=False)
     solic_email = Column(String(100), unique=True, nullable=False)
     solic_telefone = Column(String(11))
+    solic_nome_usuario = Column(String(15))
+    solic_senha = Column(String(100))
+    solic_ativo = Column(Boolean)
 
     def __init__(self):
         self.engine = create_engine('sqlite:///solicitantes.db', echo=True)
@@ -20,11 +23,11 @@ class Solicitante_model(Base):
         Base.metadata.create_all(self.engine)
 
     def __repr__(self):
-        return f"<Solicitante(solic_id={self.solic_id}, solic_nome={self.solic_nome}, solic_sala={self.solic_sala}, solic_email={self.solic_email}, solic_telefone={self.solic_telefone})>"
+        return f"<Solicitante(solic_id={self.solic_id}, solic_nome={self.solic_nome}, solic_sala={self.solic_sala}, solic_email={self.solic_email}, solic_telefone={self.solic_telefone}, solic_nome_usuario={self.solic_nome_usuario}, solic_ativo={self.solic_ativo})>"
 
     # Operações CRUD
 
-    def criar(self):
+    def criar(self)-> dict:
         try:
             self.session.add(self)
             self.session.commit()
@@ -49,7 +52,7 @@ class Solicitante_model(Base):
             return True
         return False
     
-    def atualizar(self, solic_nome=None, solic_sala=None, solic_email=None, solic_telefone=None):
+    def atualizar(self, solic_nome=None, solic_sala=None, solic_email=None, solic_telefone=None, solic_senha=None, solic_ativo=None):
         solicitante = self.session.query(Solicitante_model).filter_by(solic_id=self.solic_id).first()
         try:
             if solicitante:
@@ -61,6 +64,10 @@ class Solicitante_model(Base):
                     solicitante.solic_email = solic_email
                 if solic_telefone:
                     solicitante.solic_telefone = solic_telefone
+                if solic_senha:
+                    solicitante.solic_senha = solic_senha
+                if solic_ativo:
+                    solicitante.solic_ativo = solic_ativo
                 self.session.commit()
                 return True
         except Exception as e:
@@ -77,3 +84,9 @@ class Solicitante_model(Base):
             except Exception as e:
                 print(e)
                 return False
+    
+    def login(self, nome_usuario, senha_hash) -> object:
+        return self.session.query(Solicitante_model).filter_by(solic_nome_usuario=nome_usuario, solic_senha=senha_hash).first()
+    
+    def solic_existe(self, nome_usuario:str) -> bool:
+        return self.session.query(Solicitante_model).filter_by(solic_nome_usuario=nome_usuario).first()

@@ -21,17 +21,24 @@ class Solicitante(Usuario):
         if 'solic_id' in dados:
             self.__id:int = dados['solic_id']
 
-    def registrar_solicitante(self):
+    def registrar_solicitante(self, solic_nome_usuario:str, solic_senha:str)-> dict:
+        ferramentas = Ferramentas()
         solic_model = Solicitante_model()
         solic_model.solic_nome = self._Usuario__nome
         solic_model.solic_sala = self._Usuario__sala
         solic_model.solic_email = self._Usuario__email
         solic_model.solic_telefone = self._Usuario__telefone
+        solic_model.solic_nome_usuario = solic_nome_usuario
+        solic_model.solic_senha = ferramentas.encriptar_senha(solic_senha)
+        solic_model.solic_ativo = False
         return solic_model.criar()
 
     def atualizar_solicitante(self, dados : dict) -> dict:
+        ferramentas = Ferramentas()
         solic_model = Solicitante_model()
         solic_model.solic_id = self._Solicitante__id
+        if 'solic_senha' in dados:
+                dados['solic_senha'] = ferramentas.encriptar_senha(dados['solic_senha'])
         solicitante_atualizado = solic_model.atualizar(**dados)
         return {'atualizado':solicitante_atualizado}
 
@@ -89,23 +96,42 @@ class Autenticador:
         self.nome_usuario, self.senha = credenciais
         auth = self.autenticar()
         if auth['auth']:
-            if auth['colab'] != None:
-                dados_em_dict = self.modelo_para_dict(auth['colab'], ['colab_senha'])
-                return {'auth':True, 'usuario_dict':dados_em_dict}
+            if 'colab' in auth:
+                if auth['colab'] != None:
+                    dados_em_dict = self.modelo_para_dict(auth['colab'], ['colab_senha'])
+                    return {'auth':True, 'usuario_dict':dados_em_dict, 'tipo':auth['tipo']}
+            if 'solic' in auth:
+                if auth['solic'] != None:
+                    dados_em_dict = self.modelo_para_dict(auth['solic'], ['solic_senha'])
+                    return {'auth':True, 'usuario_dict':dados_em_dict, 'tipo':auth['tipo']}
         return auth
           
     def autenticar(self):
         ferramentas = Ferramentas()
         senha_hash = ferramentas.encriptar_senha(self.senha)
         colab_model = Colaborador_model()
+        solic_model = Solicitante_model()
+
         if (self.nome_usuario == "") and (self.senha == ""):
             return {'msg':'Não é possível enviar campos vazios!', 'auth':False}
+        
+        auth = {'msg':'Este usuário não existe em nosso banco de dados!', 'auth':False}
+
         if colab_model.colab_existe(self.nome_usuario) == None:
-            return {'msg':'Este usuário não existe em nosso banco de dados!', 'auth':False}
+            auth = {'msg':'Este colaborador não existe em nosso banco de dados!', 'auth':False}
+        
+        if solic_model.solic_existe(self.nome_usuario) == None:
+            auth = {'msg':'Este solicitante não existe em nosso banco de dados!', 'auth':False}
+        
         colab = colab_model.login(self.nome_usuario, senha_hash)
         if colab != None:
-            return {'auth':True, 'colab':colab}
-        return {'msg':'Senha incorreta','auth':False}
+            auth = {'auth':True, 'colab':colab, 'tipo':'colab'}
+        
+        solic = solic_model.login(self.nome_usuario, senha_hash)
+        if solic != None:
+            auth = {'auth':True, 'solic':solic, 'tipo':'solic'}
+        
+        return auth
 
     def modelo_para_dict(self, obj:object, excluir_campos:list=None) -> dict:
         if excluir_campos is None:
@@ -133,7 +159,7 @@ class Gerenciador_usuarios:
     
     def registrar_solicitante(self, dados : dict) -> dict:
         solic = self.construir_solicitante(dados)
-        resultado = solic.registrar_solicitante()
+        resultado = solic.registrar_solicitante(dados['solic_nome_usuario'], dados['solic_senha'])
         return {'res':resultado}
     
     def registrar_colaborador(self, dados:dict) -> dict:
@@ -146,7 +172,9 @@ class Gerenciador_usuarios:
         model = Solicitante_model()
         model.solic_id = solic_id
         resultado = model.ler()
-        return {'dados':ferramentas.para_dict(resultado)}
+        dict_solic = ferramentas.para_dict(resultado)
+        del dict_solic['solic_senha']
+        return {'dados':dict_solic}
 
     def carregar_colaborador_via_id(self, colab_id:int) -> object:
         ferramentas = Ferramentas()
@@ -190,7 +218,9 @@ class Gerenciador_usuarios:
                 "solic_nome":solic.solic_nome,
                 "solic_sala":solic.solic_sala,
                 "solic_email":solic.solic_email,
-                "solic_telefone":solic.solic_telefone
+                "solic_telefone":solic.solic_telefone,
+                "solic_nome_usuario":solic.solic_nome_usuario,
+                "solic_ativo":solic.solic_ativo
             }
             usuarios.append(solic_dict)
         return usuarios

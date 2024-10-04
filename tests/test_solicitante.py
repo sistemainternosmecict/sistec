@@ -3,7 +3,7 @@ from modules.usuarios import Solicitante
 def test_solicitante_instanciando():
     mock_dados_sem_id = {
         "usuario_nome":"test user",
-        "usuario_sala":"1000",
+        "usuario_sala":"0001",
         "usuario_email":"testmail1@mail.com",
         "usuario_telefone":"0"
     }
@@ -13,7 +13,7 @@ def test_solicitante_instanciando():
 def test_solicitante_obter_dados_retorna_dados_em_dict():
     mock_dados_sem_id = {
         "usuario_nome":"test user",
-        "usuario_sala":"1000",
+        "usuario_sala":"0001",
         "usuario_email":"testmail1@mail.com",
         "usuario_telefone":"0"
     }
@@ -26,12 +26,12 @@ def test_solicitante_obter_dados_retorna_dados_em_dict():
 def test_solicitante_registrar_solicitante_1_funciona():
     mock_dados_sem_id = {
         "usuario_nome":"test user",
-        "usuario_sala":"1000",
+        "usuario_sala":"0001",
         "usuario_email":"testmail1@mail.com",
         "usuario_telefone":"0"
     }
     instancia_solicitante = Solicitante(mock_dados_sem_id)
-    resultado = instancia_solicitante.registrar_solicitante()
+    resultado = instancia_solicitante.registrar_solicitante("root", "test")
     assert resultado['id'] == 1
     assert resultado['registro'] == True
 
@@ -41,7 +41,7 @@ def test_solicitante_instanciar_com_id_retorna_id():
         "usuario_sala":"1000",
         "usuario_email":"testmail1@mail.com",
         "usuario_telefone":"0",
-        "solic_id":2
+        "solic_id":1
     }
     instancia_solicitante = Solicitante(mock_dados_com_id)
     resultado = instancia_solicitante.obter_id()
@@ -56,12 +56,25 @@ def test_solicitante_atualizar_com_dados_corretos():
         "solic_id":1
     }
     mock_dados_atualizados = {
-        "solic_nome":"thyez",
-        "solic_sala":"24"
+        "solic_nome":"admin",
+        "solic_sala":"24",
+        "solic_senha":"senha_trocada"
     }
     instancia_solicitante = Solicitante(mock_dados_com_id)
     resultado = instancia_solicitante.atualizar_solicitante(mock_dados_atualizados)
     assert resultado['atualizado'] == True
+
+def test_solicitante_registrar_solicitante_2_funciona():
+    mock_dados_sem_id = {
+        "usuario_nome":"test user2",
+        "usuario_sala":"200",
+        "usuario_email":"testmail2@mail.com",
+        "usuario_telefone":"999"
+    }
+    instancia_solicitante2 = Solicitante(mock_dados_sem_id)
+    resultado = instancia_solicitante2.registrar_solicitante("user2","senhateste")
+    assert resultado['id'] == 2
+    assert resultado['registro'] == True
 
 def test_solicitante_remover_solicitante_1_do_banco():
     mock_dados_com_id = {
@@ -75,18 +88,6 @@ def test_solicitante_remover_solicitante_1_do_banco():
     resultado1 = instancia_solicitante1.remover_solicitante()
     assert resultado1['removido'] == True
 
-def test_solicitante_registrar_solicitante_2_funciona():
-    mock_dados_sem_id = {
-        "usuario_nome":"test user2",
-        "usuario_sala":"200",
-        "usuario_email":"testmail2@mail.com",
-        "usuario_telefone":"999"
-    }
-    instancia_solicitante2 = Solicitante(mock_dados_sem_id)
-    resultado = instancia_solicitante2.registrar_solicitante()
-    assert resultado['id'] == 1
-    assert resultado['registro'] == True
-
 def test_solicitante_registrar_solicitante_email_cadastrado():
     mock_dados_sem_id = {
         "usuario_nome":"test user2",
@@ -95,7 +96,7 @@ def test_solicitante_registrar_solicitante_email_cadastrado():
         "usuario_telefone":"999"
     }
     instancia_solicitante2 = Solicitante(mock_dados_sem_id)
-    resultado = instancia_solicitante2.registrar_solicitante()
+    resultado = instancia_solicitante2.registrar_solicitante("user2","senhateste")
     assert "O email" in resultado['msg']
     assert "já está cadastrado" in resultado['msg']
 
@@ -107,7 +108,7 @@ def test_solicitante_registrar_solicitante_retorno_de_erro():
         "usuario_telefone":999329873298732
     }
     instancia_solicitante = Solicitante(dados)
-    resultado = instancia_solicitante.registrar_solicitante()
+    resultado = instancia_solicitante.registrar_solicitante("test","test")
     assert "Não foi possível" in resultado['msg']
 
 def test_solicitante_existe_retorna_verdadeiro_quando_usuario_existe():
@@ -140,7 +141,7 @@ def test_solicitante_retorna_true_quando_remover_usuario_2():
         "usuario_sala":"200",
         "usuario_email":"testmail2@mail.com",
         "usuario_telefone":"999",
-        "solic_id":1
+        "solic_id":2
     }
     instancia_solicitante1 = Solicitante(mock_dados_com_id)
     resultado1 = instancia_solicitante1.remover_solicitante()
