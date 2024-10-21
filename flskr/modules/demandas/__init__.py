@@ -32,16 +32,19 @@ def executar_troca_status_demanda( demanda, dados ):
     demanda_formatada = FERRAMENTAS.prepara_demanda_para_atualizacao_planilha(demanda_temp)
     status = FERRAMENTAS.acertar_status_demanda(dados['dem_status'])
     linha_n = None
+    GSHEET = GSheetManager("controle_demandas", "entrada", AUTH.obter_cliente())
+    linha_n = GSHEET.obter_linha_pelo_protocolo(demanda_formatada[0])
+    GSHEET.atualizar_status(linha_n, status)
 
-    if demanda_formatada[-1] == 1:
-        GSHEET = GSheetManager("controle_demandas", "entrada", AUTH.obter_cliente())
-        linha_n = GSHEET.obter_linha_pelo_protocolo(demanda_formatada[0])
-        GSHEET.atualizar_status(linha_n, status)
-    
-    if demanda_formatada[-1] > 1 and demanda_formatada[-1] < 5:
-        GSHEET = GSheetManager("controle_demandas", "demandas", AUTH.obter_cliente())
-        linha_n = GSHEET.obter_linha_pelo_protocolo(demanda_formatada[0])
-        GSHEET.atualizar_status(linha_n, status)
+def executar_troca_prioridade_demanda( dados ):
+    AUTH = Autenticador()
+    protocolo_inserido = dados['protocolo']
+    prioridade_atualizada = dados['dem_prioridade']
+    linha_n = None
+    GSHEET = GSheetManager("controle_demandas", "entrada", AUTH.obter_cliente())
+    linha_n = GSHEET.obter_linha_pelo_protocolo(protocolo_inserido)
+    GSHEET.atualizar_prioridade(linha_n + 1, prioridade_atualizada)
+    print("=>", linha_n, prioridade_atualizada)
 
 @bp_demandas.route("/listar")
 def obter_demandas():
@@ -63,8 +66,12 @@ def atualizar_demanda():
     resultado = demanda.atualizar_demanda(dados)
 
     if 'dem_status' in dados:
-        thread_insercao_planilha = threading.Thread(target=executar_troca_status_demanda, args=(demanda, dados,))
-        thread_insercao_planilha.start()
+        thread_atualizacao_planilha = threading.Thread(target=executar_troca_status_demanda, args=(demanda, dados,))
+        thread_atualizacao_planilha.start()
+
+    if 'dem_prioridade' in dados:
+        thread_atualizacao_planilha = threading.Thread(target=executar_troca_prioridade_demanda, args=(dados,))
+        thread_atualizacao_planilha.start()
         
     return jsonify(resultado)
 
