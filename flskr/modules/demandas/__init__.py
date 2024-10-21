@@ -43,8 +43,17 @@ def executar_troca_prioridade_demanda( dados ):
     linha_n = None
     GSHEET = GSheetManager("controle_demandas", "entrada", AUTH.obter_cliente())
     linha_n = GSHEET.obter_linha_pelo_protocolo(protocolo_inserido)
-    GSHEET.atualizar_prioridade(linha_n + 1, prioridade_atualizada)
-    print("=>", linha_n, prioridade_atualizada)
+    GSHEET.atualizar_prioridade(linha_n, str(prioridade_atualizada))
+
+def executar_troca_direcionamento_demanda( dados ):
+    AUTH = Autenticador()
+    protocolo_inserido = dados['protocolo']
+    direcionamento_atualizado = dados['tb_colaboradores_id']
+    linha_n = None
+    GSHEET = GSheetManager("controle_demandas", "entrada", AUTH.obter_cliente())
+    linha_n = GSHEET.obter_linha_pelo_protocolo(protocolo_inserido)
+    colab_nome = obter_colaborador_por_id(direcionamento_atualizado)
+    GSHEET.atualizar_direcionamento(linha_n, colab_nome)
 
 @bp_demandas.route("/listar")
 def obter_demandas():
@@ -71,6 +80,10 @@ def atualizar_demanda():
 
     if 'dem_prioridade' in dados:
         thread_atualizacao_planilha = threading.Thread(target=executar_troca_prioridade_demanda, args=(dados,))
+        thread_atualizacao_planilha.start()
+
+    if 'tb_colaboradores_id' in dados:
+        thread_atualizacao_planilha = threading.Thread(target=executar_troca_direcionamento_demanda, args=(dados,))
         thread_atualizacao_planilha.start()
         
     return jsonify(resultado)

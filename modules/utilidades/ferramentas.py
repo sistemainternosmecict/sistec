@@ -1,6 +1,7 @@
 import hashlib
 from datetime import datetime
 from models.solicitantes import Solicitante_model
+#from models.colaboradores import Colaborador_model
 
 class Mensageiro:
     def __init__(self) -> None:
