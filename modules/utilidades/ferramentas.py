@@ -75,24 +75,28 @@ class Ferramentas:
             dados['local'],
             dados['sala'],
             dados['descricao'],
-            "Nova demanda"
+            self.acertar_status_demanda(dados['status'])
         ]
 
         return retorno
     
     def prepara_demanda_para_atualizacao_planilha( self, dados ) -> list:
+        dt_atendimento = "-"
+        if dados['status'] == 2 or dados['status'] == 3:
+            dt_atendimento = self.__data_hora.strftime("%d/%m/%Y")
+
         retorno = [
             dados['protocolo'],
             dados['nvl_prioridade'],
             dados['dt_entrada'],
-            "-",
+            dt_atendimento,
             self.obter_solicitante_por_id(dados['solicitante']),
             dados['tipo'],
             dados['direcionamento'],
             dados['local'],
             dados['sala'],
             dados['descricao'],
-            dados['status']
+            self.acertar_status_demanda(dados['status'])
         ]
 
         return retorno
