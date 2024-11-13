@@ -3,11 +3,12 @@ from modules.demandas import Demanda
 
 def construct_model(modelClass:object) -> object:
     dados = {
-        'protocolo':1234567890,
+        'protocolo':202411200910,
         'solicitante':1,
         'direcionamento':1,
         'tipo':1,
-        'dt_entrada':'2024/09/10|12:00',
+        'dt_entrada':'2024/11/20|09:10',
+        'dt_atendimento':None,
         'status':1,
         'nvl_prioridade':0,
         'local':"SMECICT",
@@ -15,7 +16,8 @@ def construct_model(modelClass:object) -> object:
         'descricao':'Descricao de teste',
         'dt_final':0,
         'tempo_finalizacao':0,
-        'atendido_por':"test"
+        'atendido_por':"test",
+        'observacoes':None
     }
     model = modelClass(dados)
     return model
@@ -49,8 +51,8 @@ def test_demanda_registrar_nova_demanda():
 
 def test_demanda_atualizar_demanda():
     dados = {
-        "dem_dt_atendimento":"2024/09/11|12:00",
-        "protocolo":20240920101008
+        "dem_dt_atendimento":"2024/11/22|12:00",
+        "protocolo":20241113111244
     }
     instancia_demanda = Demanda(dados)
     resultado = instancia_demanda.atualizar_demanda(dados)
@@ -62,7 +64,7 @@ def test_demanda_atualizar_demanda():
 def test_demanda_finalizar_demanda():
     dados = {
         "dem_status":5,
-        "protocolo":20240920101008
+        "protocolo":20241113111244
     }
     instancia_demanda = Demanda(dados)
     resultado = instancia_demanda.finalizar_demanda(dados)

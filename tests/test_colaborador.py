@@ -1,84 +1,96 @@
 from ..modules.usuarios import Colaborador
 
-mock_dados_colab = {
-    "usuario_nome":"thyéz",
-    "usuario_sala":"24",
-    "usuario_email":"thyezolaiveira@gmail.com",
-    "usuario_telefone":"22998548514",
-    "colab_id":1
-}
+def mock(com_id:bool=False) -> dict:
+    mock_dict = {}
+    
+    mock_dict["usuario_cpf"] = 12345678910
+    mock_dict["usuario_nome"] = "Usuario de teste com nome completo escrito por extenso"
+    mock_dict["usuario_matricula"] = 123456
+    mock_dict["usuario_setor"] = "TI"
+    mock_dict["usuario_sala"] = "24"
+    mock_dict["usuario_cargo"] = 1
+    mock_dict["usuario_email"] = "mail_teste@mail.com"
+    mock_dict["usuario_telefone"] = 22900000000
+    mock_dict["usuario_senha"] = "root"
+    mock_dict["usuario_tipo"] = 1
+    mock_dict["usuario_ativo"] = True
 
-mock_dados_colab_default = {
-    "usuario_nome":"root",
-    "usuario_sala":"24",
-    "usuario_email":"root@gmail.com",
-    "usuario_telefone":"0"
-}
+    if com_id:
+        mock_dict["usuario_id"] = 1
+    
+    return mock_dict
 
-def test_colaborador_instanciando():
-    instancia_colaborador = Colaborador(mock_dados_colab)
-    assert isinstance(instancia_colaborador, Colaborador)
+def test_instanciando():
+    instancia = Colaborador(mock())
+    assert isinstance(instancia, Colaborador)
 
-# Testar se o registro do colaborador esta registrando com os dados corretos
-
-def test_colaborador_registrar_colaborador_funciona():
-    instancia_colaborador = Colaborador(mock_dados_colab)
-    resultado = instancia_colaborador.registrar_colaborador("thyez_s24", "senhateste")
+def test_registro_comum():
+    instancia = Colaborador()
+    resultado = instancia.registrar_colaborador(mock())
     assert resultado['registro'] == True
 
-# Testar se o registro do colaborador esta barrando o registro com nome de usuario repetido
-
-def test_colaborador_registrar_colaborador_nao_registra_nome_usuario_igual():
-    instancia_colaborador = Colaborador(mock_dados_colab)
-    resultado = instancia_colaborador.registrar_colaborador("thyez_s24", "senhateste")
+def test_nao_registra_nome_usuario_igual():
+    instancia = Colaborador()
+    resultado = instancia.registrar_colaborador(mock())
     assert resultado['registro'] == False
 
-# Testar se a atualização do colaborador esta atualizando o nome, sala, email, telefone, ativo e senha
-
-def test_colaborador_atualizar_nome():
-    instancia_colaborador = Colaborador(mock_dados_colab)
-    resultado = instancia_colaborador.atualizar_colaborador({'colab_nome':'test'})
-    resultado = instancia_colaborador.atualizar_colaborador({'colab_nome':mock_dados_colab['usuario_nome']})
+def test_atualizar_cpf():
+    instancia = Colaborador(mock(True))
+    resultado = instancia.atualizar_colaborador({'usuario_cpf':33355544478})
     assert resultado['atualizado'] == True
 
-
-def test_colaborador_atualizar_sala():
-    instancia_colaborador = Colaborador(mock_dados_colab)
-    resultado = instancia_colaborador.atualizar_colaborador({'colab_sala':'test'})
-    resultado = instancia_colaborador.atualizar_colaborador({'colab_sala':mock_dados_colab['usuario_sala']})
+def test_atualizar_nome():
+    instancia = Colaborador(mock(True))
+    resultado = instancia.atualizar_colaborador({'usuario_nome':'test'})
     assert resultado['atualizado'] == True
 
-def test_colaborador_atualizar_email():
-    instancia_colaborador = Colaborador(mock_dados_colab)
-    resultado = instancia_colaborador.atualizar_colaborador({'colab_email':'test'})
-    resultado = instancia_colaborador.atualizar_colaborador({'colab_email':mock_dados_colab['usuario_email']})
+def test_atualizar_matricula():
+    instancia = Colaborador(mock(True))
+    resultado = instancia.atualizar_colaborador({'usuario_matricula':11122})
     assert resultado['atualizado'] == True
 
-def test_colaborador_atualizar_telefone():
-    instancia_colaborador = Colaborador(mock_dados_colab)
-    resultado = instancia_colaborador.atualizar_colaborador({'colab_telefone':'test'})
-    resultado = instancia_colaborador.atualizar_colaborador({'colab_telefone':mock_dados_colab['usuario_telefone']})
+def test_atualizar_setor():
+    instancia = Colaborador(mock(True))
+    resultado = instancia.atualizar_colaborador({'usuario_setor':'ADM'})
     assert resultado['atualizado'] == True
 
-def test_colaborador_atualizar_ativo():
-    instancia_colaborador = Colaborador(mock_dados_colab)
-    resultado = instancia_colaborador.atualizar_colaborador({'colab_ativo':'test'})
-    resultado = instancia_colaborador.atualizar_colaborador({'colab_ativo':False})
+def test_atualizar_sala():
+    instancia = Colaborador(mock(True))
+    resultado = instancia.atualizar_colaborador({'usuario_sala':'10'})
+    assert resultado['atualizado'] == True
+
+def test_atualizar_cargo():
+    instancia = Colaborador(mock(True))
+    resultado = instancia.atualizar_colaborador({'usuario_cargo':2})
+    assert resultado['atualizado'] == True
+
+def test_atualizar_email():
+    instancia = Colaborador(mock(True))
+    resultado = instancia.atualizar_colaborador({'usuario_email':'mail_novo@mail.com'})
+    assert resultado['atualizado'] == True
+
+def test_atualizar_telefone():
+    instancia = Colaborador(mock(True))
+    resultado = instancia.atualizar_colaborador({'usuario_telefone':123})
+    assert resultado['atualizado'] == True
+
+def test_atualizar_senha():
+    instancia = Colaborador(mock(True))
+    resultado = instancia.atualizar_colaborador({'usuario_senha':'senha_nova'})
+    assert resultado['atualizado'] == True
+
+def test_atualizar_tipo():
+    instancia = Colaborador(mock(True))
+    resultado = instancia.atualizar_colaborador({'usuario_tipo':2})
     assert resultado['atualizado'] == True 
 
-def test_colaborador_atualizar_senha():
-    instancia_colaborador = Colaborador(mock_dados_colab)
-    resultado = instancia_colaborador.atualizar_colaborador({'colab_senha':'test'})
-    resultado = instancia_colaborador.atualizar_colaborador({'colab_senha':"senhateste"})
-    assert resultado['atualizado'] == True
+def test_atualizar_ativo():
+    instancia = Colaborador(mock(True))
+    resultado = instancia.atualizar_colaborador({'usuario_ativo':False})
+    assert resultado['atualizado'] == True 
 
-#somente para testes
-def test_solicitante_remover_colaborador_do_banco():
-    instancia_colaborador = Colaborador(mock_dados_colab)
-    resultado = instancia_colaborador.remover_colaborador()
+# #somente para testes
+def test_remover_colaborador():
+    instancia = Colaborador(mock(True))
+    resultado = instancia.remover_colaborador()
     assert resultado['removido'] == True
-
-def test_colaborador_registrar_colaborador_default_funciona():
-    instancia_colaborador = Colaborador(mock_dados_colab_default)
-    resultado = instancia_colaborador.registrar_colaborador("root", "test")
-    assert resultado['registro'] == True

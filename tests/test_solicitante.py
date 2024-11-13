@@ -1,148 +1,91 @@
 from modules.usuarios import Solicitante
 
-def test_solicitante_instanciando():
-    mock_dados_sem_id = {
-        "usuario_nome":"test user",
-        "usuario_sala":"0001",
-        "usuario_email":"testmail1@mail.com",
-        "usuario_telefone":"0"
-    }
-    instancia_solicitante = Solicitante(mock_dados_sem_id)
-    assert isinstance(instancia_solicitante, Solicitante)
+def mock(com_id:bool=False) -> dict:
+    mock_dict = {}
+    
+    mock_dict["usuario_cpf"] = 12345678910
+    mock_dict["usuario_nome"] = "Usuario de teste com nome completo escrito por extenso"
+    mock_dict["usuario_matricula"] = 123456
+    mock_dict["usuario_setor"] = "TI"
+    mock_dict["usuario_sala"] = "24"
+    mock_dict["usuario_cargo"] = 1
+    mock_dict["usuario_email"] = "mail_teste@mail.com"
+    mock_dict["usuario_telefone"] = 22900000000
+    mock_dict["usuario_senha"] = "root"
+    mock_dict["usuario_tipo"] = 1
+    mock_dict["usuario_ativo"] = True
 
-def test_solicitante_obter_dados_retorna_dados_em_dict():
-    mock_dados_sem_id = {
-        "usuario_nome":"test user",
-        "usuario_sala":"0001",
-        "usuario_email":"testmail1@mail.com",
-        "usuario_telefone":"0"
-    }
-    instancia_solicitante = Solicitante(mock_dados_sem_id)
-    resultado = instancia_solicitante.obter_dados()
-    assert type(resultado) == dict
+    if com_id:
+        mock_dict["usuario_id"] = 1
+    
+    return mock_dict
 
-# Teste de registro e de remoção
+def test_instanciando():
+    instancia = Solicitante(mock())
+    assert isinstance(instancia, Solicitante)
 
-def test_solicitante_registrar_solicitante_1_funciona():
-    mock_dados_sem_id = {
-        "usuario_nome":"test user",
-        "usuario_sala":"0001",
-        "usuario_email":"testmail1@mail.com",
-        "usuario_telefone":"0"
-    }
-    instancia_solicitante = Solicitante(mock_dados_sem_id)
-    resultado = instancia_solicitante.registrar_solicitante("root", "test")
-    assert resultado['id'] == 1
+def test_registro_comum():
+    instancia = Solicitante()
+    resultado = instancia.registrar_solicitante(mock())
     assert resultado['registro'] == True
 
-def test_solicitante_instanciar_com_id_retorna_id():
-    mock_dados_com_id = {
-        "usuario_nome":"test user",
-        "usuario_sala":"1000",
-        "usuario_email":"testmail1@mail.com",
-        "usuario_telefone":"0",
-        "solic_id":1
-    }
-    instancia_solicitante = Solicitante(mock_dados_com_id)
-    resultado = instancia_solicitante.obter_id()
-    assert resultado > 0
-
-def test_solicitante_atualizar_com_dados_corretos():
-    mock_dados_com_id = {
-        "usuario_nome":"test user",
-        "usuario_sala":"1000",
-        "usuario_email":"testmail1@mail.com",
-        "usuario_telefone":"0",
-        "solic_id":1
-    }
-    mock_dados_atualizados = {
-        "solic_nome":"admin",
-        "solic_sala":"24",
-        "solic_senha":"senha_trocada"
-    }
-    instancia_solicitante = Solicitante(mock_dados_com_id)
-    resultado = instancia_solicitante.atualizar_solicitante(mock_dados_atualizados)
+def test_atualizar_cpf():
+    instancia = Solicitante(mock(True))
+    resultado = instancia.atualizar_solicitante({'usuario_cpf':33355544478})
     assert resultado['atualizado'] == True
 
-def test_solicitante_registrar_solicitante_2_funciona():
-    mock_dados_sem_id = {
-        "usuario_nome":"test user2",
-        "usuario_sala":"200",
-        "usuario_email":"testmail2@mail.com",
-        "usuario_telefone":"999"
-    }
-    instancia_solicitante2 = Solicitante(mock_dados_sem_id)
-    resultado = instancia_solicitante2.registrar_solicitante("user2","senhateste")
-    assert resultado['id'] == 2
-    assert resultado['registro'] == True
+def test_atualizar_nome():
+    instancia = Solicitante(mock(True))
+    resultado = instancia.atualizar_solicitante({'usuario_nome':'test'})
+    assert resultado['atualizado'] == True
 
-def test_solicitante_remover_solicitante_1_do_banco():
-    mock_dados_com_id = {
-        "usuario_nome":"test user",
-        "usuario_sala":"1000",
-        "usuario_email":"testmail1@mail.com",
-        "usuario_telefone":"0",
-        "solic_id":1
-    }
-    instancia_solicitante1 = Solicitante(mock_dados_com_id)
-    resultado1 = instancia_solicitante1.remover_solicitante()
-    assert resultado1['removido'] == True
+def test_atualizar_matricula():
+    instancia = Solicitante(mock(True))
+    resultado = instancia.atualizar_solicitante({'usuario_matricula':11122})
+    assert resultado['atualizado'] == True
 
-def test_solicitante_registrar_solicitante_email_cadastrado():
-    mock_dados_sem_id = {
-        "usuario_nome":"test user2",
-        "usuario_sala":"200",
-        "usuario_email":"testmail2@mail.com",
-        "usuario_telefone":"999"
-    }
-    instancia_solicitante2 = Solicitante(mock_dados_sem_id)
-    resultado = instancia_solicitante2.registrar_solicitante("user2","senhateste")
-    assert "O email" in resultado['msg']
-    assert "já está cadastrado" in resultado['msg']
+def test_atualizar_setor():
+    instancia = Solicitante(mock(True))
+    resultado = instancia.atualizar_solicitante({'usuario_setor':'ADM'})
+    assert resultado['atualizado'] == True
 
-def test_solicitante_registrar_solicitante_retorno_de_erro():
-    dados = {
-        "usuario_nome":"testando_um_nome_muito_longo_para_dar_erro",
-        "usuario_sala":10029129,
-        "usuario_email":None,
-        "usuario_telefone":999329873298732
-    }
-    instancia_solicitante = Solicitante(dados)
-    resultado = instancia_solicitante.registrar_solicitante("test","test")
-    assert "Não foi possível" in resultado['msg']
+def test_atualizar_sala():
+    instancia = Solicitante(mock(True))
+    resultado = instancia.atualizar_solicitante({'usuario_sala':'10'})
+    assert resultado['atualizado'] == True
 
-def test_solicitante_existe_retorna_verdadeiro_quando_usuario_existe():
-    mock_dados_com_id = {
-        "usuario_nome":"test user2",
-        "usuario_sala":"200",
-        "usuario_email":"testmail2@mail.com",
-        "usuario_telefone":"999",
-        "solic_id":1
-    }
-    instancia_solicitante = Solicitante(mock_dados_com_id)
-    resultado = instancia_solicitante.usuario_existe(mock_dados_com_id['usuario_nome'], mock_dados_com_id['usuario_sala'])
-    assert resultado['usuario_existe'] == True
+def test_atualizar_cargo():
+    instancia = Solicitante(mock(True))
+    resultado = instancia.atualizar_solicitante({'usuario_cargo':2})
+    assert resultado['atualizado'] == True
 
-def test_solicitante_existe_retorna_falso_quando_usuario_nao_existe():
-    mock_dados_com_id = {
-        "usuario_nome":"test user2",
-        "usuario_sala":"200",
-        "usuario_email":"testmail2@mail.com",
-        "usuario_telefone":"999",
-        "solic_id":1
-    }
-    instancia_solicitante = Solicitante(mock_dados_com_id)
-    resultado = instancia_solicitante.usuario_existe('usuario_inexistente', 'sala_inexistente')
-    assert resultado['usuario_existe'] == False
+def test_atualizar_email():
+    instancia = Solicitante(mock(True))
+    resultado = instancia.atualizar_solicitante({'usuario_email':'mail_novo@mail.com'})
+    assert resultado['atualizado'] == True
 
-def test_solicitante_retorna_true_quando_remover_usuario_2():
-    mock_dados_com_id = {
-        "usuario_nome":"test user2",
-        "usuario_sala":"200",
-        "usuario_email":"testmail2@mail.com",
-        "usuario_telefone":"999",
-        "solic_id":2
-    }
-    instancia_solicitante1 = Solicitante(mock_dados_com_id)
-    resultado1 = instancia_solicitante1.remover_solicitante()
-    assert resultado1['removido'] == True
+def test_atualizar_telefone():
+    instancia = Solicitante(mock(True))
+    resultado = instancia.atualizar_solicitante({'usuario_telefone':123})
+    assert resultado['atualizado'] == True
+
+def test_atualizar_senha():
+    instancia = Solicitante(mock(True))
+    resultado = instancia.atualizar_solicitante({'usuario_senha':'senha_nova'})
+    assert resultado['atualizado'] == True
+
+def test_atualizar_tipo():
+    instancia = Solicitante(mock(True))
+    resultado = instancia.atualizar_solicitante({'usuario_tipo':2})
+    assert resultado['atualizado'] == True 
+
+def test_atualizar_ativo():
+    instancia = Solicitante(mock(True))
+    resultado = instancia.atualizar_solicitante({'usuario_ativo':False})
+    assert resultado['atualizado'] == True 
+
+# #somente para testes
+def test_remover_solicitante():
+    instancia = Solicitante(mock(True))
+    resultado = instancia.remover_solicitante()
+    assert resultado['removido'] == True

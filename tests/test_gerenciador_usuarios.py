@@ -1,6 +1,5 @@
 from modules.usuarios import Gerenciador_usuarios, Solicitante, Colaborador
-from models.solicitantes import Solicitante_model
-from models.colaboradores import Colaborador_model
+from models.usuarios import Usuario_model
 
 def test_gerenciador_usuarios_verificar_campos_vazio_retornar_4_campos():
     gerenciador = Gerenciador_usuarios()
@@ -8,7 +7,7 @@ def test_gerenciador_usuarios_verificar_campos_vazio_retornar_4_campos():
     dict_test = {}
     campos = gerenciador.verificar_campos(dict_test)
 
-    esperado = 4
+    esperado = 7
     comprimento = len(campos)
 
     assert comprimento == esperado
@@ -42,10 +41,17 @@ def test_gerenciador_usuarios_construir_colaborador_retorna_obj():
 def test_gerenciador_usuarios_registrar_solicitante():
     gerenciador = Gerenciador_usuarios()
     dict_test = {
-        "usuario_nome":"Thyéz",
+        "usuario_cpf":93879378,
+        "usuario_nome":"Thyéz de Oliveira Monteiro",
+        "usuario_matricula":34,
+        "usuario_setor":"ADM",
         "usuario_sala":"24",
-        "usuario_email":"mail3@mail.com",
-        "usuario_telefone":"22900000000"
+        "usuario_cargo":2,
+        "usuario_email":"thyezoliveira4@gmail.com",
+        "usuario_telefone":"22998548514",
+        "usuario_senha":"root",
+        "usuario_tipo":1,
+        "usuario_ativo":1
     }
     resultado = gerenciador.registrar_solicitante(dict_test)
     assert resultado['res']['registro'] == True
@@ -53,7 +59,7 @@ def test_gerenciador_usuarios_registrar_solicitante():
 def test_gerenciador_usuarios_carregar_solicitante_via_id_retorna_solicitante():
     gerenciador = Gerenciador_usuarios()
     resultado2 = gerenciador.carregar_solicitante_via_id(1)
-    assert type(resultado2['obj']) == Solicitante_model
+    assert type(resultado2['obj']) == Usuario_model
 
 def test_gerenciador_usuarios_remover_solicitante():
     gerenciador = Gerenciador_usuarios()
@@ -76,4 +82,4 @@ def test_gerenciador_usuarios_registrar_colaborador():
 def test_gerenciador_usuarios_carregar_colaborador_via_id_retorna_colaborador():
     gerenciador = Gerenciador_usuarios()
     resultado2 = gerenciador.carregar_colaborador_via_id(1)
-    assert type(resultado2['obj']) == Colaborador_model
+    assert type(resultado2['obj']) == Usuario_model

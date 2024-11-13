@@ -4,7 +4,8 @@ from modules.utilidades.ferramentas import Ferramentas
 
 class Demanda:
     def __init__(self, dados: dict):
-        self.nvl_prioridade = dados.get('nvl_prioridade')
+        self.nvl_prioridade = dados.get('nvl_prioridade') or 0
+        self.link_oficio = dados.get('link_oficio') or None
         self.solicitante = dados.get('solicitante')
         self.tipo = dados.get('tipo')
         self.direcionamento = dados.get('direcionamento')
@@ -13,7 +14,7 @@ class Demanda:
 
         if not 'dt_entrada' in dados:
             data_atual = datetime.now()
-            self.dt_entrada = data_atual.strftime("%d/%m/%Y|%H:%m")
+            self.dt_entrada = data_atual.strftime("%d/%m/%Y|%H:%M")
         else:
             self.dt_entrada = dados.get("dt_entrada")
         if 'dt_atendimento' in dados:
@@ -61,6 +62,7 @@ class Demanda:
             'atendido_por': self.atendido_por,
             'tempo_finalizacao': self.tempo_finalizacao,
             'observacoes': self.observacoes,
+            'link_oficio': self.link_oficio
         }
         
         return dados
@@ -69,10 +71,10 @@ class Demanda:
         ferramentas = Ferramentas()
         modelo = Demanda_model()
         modelo.dem_protocolo=ferramentas.gerar_protocolo()
-        modelo.tb_solicitantes_id=self.solicitante
-        modelo.tb_colaboradores_id=self.direcionamento
+        modelo.dem_solicitante_id=self.solicitante
+        modelo.dem_direcionamento_id=self.direcionamento
         modelo.dem_dt_entrada=self.dt_entrada
-        modelo.dem_dt_atendimento="-"
+        modelo.dem_dt_atendimento=None
         modelo.dem_tipo_demanda=self.tipo
         modelo.dem_local=self.local
         modelo.dem_sala=self.sala
@@ -80,10 +82,10 @@ class Demanda:
         modelo.dem_status=self.status
         modelo.dem_prioridade=self.nvl_prioridade
         modelo.dem_dt_final=None
-        modelo.dem_atendido_por=None
+        modelo.dem_atendido_por_id=None
         modelo.dem_tempo_finalizacao=None
         modelo.dem_observacoes=None
-        modelo.dem_link_oficio=None
+        modelo.dem_link_oficio=self.link_oficio
         return modelo.inserir()
 
     def atualizar_demanda(self, dados: dict):
@@ -117,12 +119,20 @@ class Gerenciador_demandas:
     def obter_demanda_via_protocolo(self, protocolo: int) -> Demanda:
         for demanda in self.__demandas_lista:
             if demanda['protocolo'] == protocolo:
-                return Demanda(demanda)
+                dem_temp = Demanda(demanda)
+                return dem_temp.obter_dados()
+        return None
+    
+    def obter_obj_demanda_via_protocolo(self, protocolo: int) -> Demanda:
+        for demanda in self.__demandas_lista:
+            if demanda['protocolo'] == protocolo:
+                dem_temp = Demanda(demanda)
+                return dem_temp
         return None
 
-    def notificar_colab(self, msg: str) -> bool:
-        ferramenta = Ferramentas()
-        return ferramenta.enviar_mensagem(self.__colaborador, msg)
+    # def notificar_colab(self, msg: str) -> bool:
+    #     ferramenta = Ferramentas()
+    #     return ferramenta.enviar_mensagem(self.__colaborador, msg)
 
     def carregar_todas_as_demandas(self):
         modelo = Demanda_model()
@@ -133,15 +143,15 @@ class Gerenciador_demandas:
                 'nvl_prioridade': dados.dem_prioridade,
                 'dt_entrada': dados.dem_dt_entrada,
                 'dt_atendimento': dados.dem_dt_atendimento,
-                'solicitante': dados.tb_solicitantes_id,
+                'solicitante': dados.dem_solicitante_id,
                 'tipo': dados.dem_tipo_demanda,
                 'local': dados.dem_local,
                 'sala': dados.dem_sala,
-                'direcionamento': dados.tb_colaboradores_id,
+                'direcionamento': dados.dem_direcionamento_id,
                 'descricao': dados.dem_descricao,
                 'status': dados.dem_status,
                 'dt_final': dados.dem_dt_final,
-                'atendido_por': dados.dem_atendido_por,
+                'atendido_por': dados.dem_atendido_por_id,
                 'tempo_finalizacao': dados.dem_tempo_finalizacao,
                 'observacoes': dados.dem_observacoes
             })

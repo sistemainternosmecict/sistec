@@ -18,7 +18,8 @@ def test_gerenciador_demandas_criar_nova_demanda():
         "descricao":"PC ficou ruim",
         "tipo":1,
         "local":"SMECICT",
-        "sala":"15b"
+        "sala":"15b",
+        "status":1
     }
     instancia_gerenciador = Gerenciador_demandas()
     demanda = instancia_gerenciador.criar_nova_demanda(mock_dados)
@@ -33,7 +34,8 @@ def test_gerenciador_demandas_agregar_demanda():
         "descricao":"Chrome ficou ruim",
         "tipo":1,
         "local":"SMECICT",
-        "sala":"15b"
+        "sala":"15b",
+        "status":1
     }
     instancia_gerenciador = Gerenciador_demandas()
     instancia_gerenciador.criar_nova_demanda(mock_dados)
@@ -48,7 +50,8 @@ def test_gerenciador_demandas_agregar_demanda():
         "descricao":"PC ficou ruim",
         "tipo":1,
         "local":"SMECICT",
-        "sala":"15b"
+        "sala":"15b",
+        "status":1
     }
     instancia_gerenciador = Gerenciador_demandas()
     demanda = instancia_gerenciador.criar_nova_demanda(mock_dados)

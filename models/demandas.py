@@ -1,14 +1,26 @@
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine, Column, Integer, String, BigInteger
 from sqlalchemy.orm import declarative_base, sessionmaker
+import os
+from dotenv import load_dotenv
+
+# Carregar as variáveis do .env
+load_dotenv()
+
+# Construir a URL do banco de dados usando as variáveis de ambiente
+db_user = os.getenv("DB_USER")
+db_password = os.getenv("DB_PASSWORD")
+db_host = os.getenv("DB_HOST")
+db_port = os.getenv("DB_PORT")
+db_name = os.getenv("DB_NAME")
 
 Base = declarative_base()
 
 class Demanda_model(Base):
     __tablename__ = 'tb_demandas'
 
-    dem_protocolo = Column(Integer, primary_key=True, nullable=False)
-    tb_solicitantes_id = Column(Integer)
-    tb_colaboradores_id = Column(Integer)
+    dem_protocolo = Column(BigInteger, primary_key=True, nullable=False)
+    dem_solicitante_id = Column(Integer)
+    dem_direcionamento_id = Column(Integer)
     dem_dt_entrada = Column(String(20))
     dem_dt_atendimento = Column(String(20))
     dem_tipo_demanda = Column(Integer)
@@ -18,36 +30,35 @@ class Demanda_model(Base):
     dem_status = Column(Integer)
     dem_prioridade = Column(Integer)
     dem_dt_final = Column(String(20))
-    dem_atendido_por = Column(String(15))
+    dem_atendido_por_id = Column(Integer)
     dem_tempo_finalizacao = Column(Integer)
     dem_observacoes = Column(String(300))
     dem_link_oficio = Column(String(200))
 
     def __init__(self):
-        self.engine = create_engine('sqlite:///demandas.db', echo=True)
+        db_url = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+        self.engine = create_engine(db_url, echo=True)
         self.Session = sessionmaker(bind=self.engine)
         self.session = self.Session()
         Base.metadata.create_all(self.engine)
     
     def __repr__(self):
-        return f"""
-        <Demanda(
-            dem_protocolo={self.dem_protocolo},
-            tb_solicitantes_id={self.tb_solicitantes_id},
-            tb_colaboradores_id={self.tb_colaboradores_id},
-            dem_dt_entrada={self.dem_dt_entrada},
-            dem_tipo_demanda={self.dem_tipo_demanda},
-            dem_local={self.dem_local},
-            dem_sala={self.dem_sala},
-            dem_descricao={self.dem_descricao},
-            dem_status={self.dem_status},
-            dem_prioridade={self.dem_prioridade},
-            dem_dt_final={self.dem_dt_final},
-            dem_atendido_por={self.dem_atendido_por},
-            dem_tempo_finalizacao={self.dem_tempo_finalizacao},
-            dem_observacoes={self.dem_observacoes},
-            dem_link_oficio={self.dem_link_oficio}
-        )>"""
+        return f"""<Demanda(dem_protocolo={self.dem_protocolo}, 
+            dem_solicitante_id={self.dem_solicitante_id}, 
+            dem_direcionamento_id={self.dem_direcionamento_id}, 
+            dem_dt_entrada={self.dem_dt_entrada}, 
+            dem_dt_atendimento={self.dem_dt_atendimento}, 
+            dem_tipo_demanda={self.dem_tipo_demanda}, 
+            dem_local={self.dem_local}, 
+            dem_sala={self.dem_sala}, 
+            dem_descricao={self.dem_descricao}, 
+            dem_status={self.dem_status}, 
+            dem_prioridade={self.dem_prioridade}, 
+            dem_dt_final={self.dem_dt_final}, 
+            dem_atendido_por_id={self.dem_atendido_por_id}, 
+            dem_tempo_finalizacao={self.dem_tempo_finalizacao}, 
+            dem_observacoes={self.dem_observacoes}, 
+            dem_link_oficio={self.dem_link_oficio})>"""
 
     def ler_todos(self):
         return self.session.query(Demanda_model).all()

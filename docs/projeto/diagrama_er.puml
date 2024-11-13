@@ -1,0 +1,107 @@
+@startuml testando
+!theme plain
+entity "tb_usuarios" as tb1 {
+usuario_id: INTEGER <<auto-gerado>>
+usuario_cpf: INTEGER
+usuario_nome: TEXT
+usuario_matricula: INTEGER
+usuario_setor: TEXT
+usuario_sala: TEXT
+usuario_cargo: INTEGER <<FK>>
+usuario_email: TEXT
+usuario_telefone: INTEGER
+usuario_senha: TEXT
+usuario_tipo: INTEGER
+usuario_ativo: INTEGER
+}
+
+entity "tb_demandas" as tb2 {
+dem_protocolo: INTEGER <<auto-gerado>>
+tb_solicitantes_id: INTEGER
+tb_colaboradores_id INTEGER
+dem_dt_entrada TEXT
+dem_dt_atendimento: TEXT
+dem_tipo_demanda: INTEGER
+dem_local: TEXT
+dem_sala: TEXT
+dem_descricao: TEXT
+dem_status: INTEGER
+dem_prioridade: INTEGER
+dem_dt_final: TEXT
+dem_atendido_por: TEXT
+dem_tempo_finalizacao: INTEGER
+dem_observacoes: TEXT
+dem_link_oficio: TEXT
+}
+
+entity "tb_unidades" as tb3 {
+uni_id: INTEGER <<auto-gerado>>
+uni_cod_ue: INTEGER
+uni_designador_categoria: TEXT
+uni_nome: TEXT
+uni_cep: INTEGER
+uni_logradouro: TEXT
+uni_numero_end: INTEGER
+uni_bairro: TEXT
+uni_distrito: INTEGER
+uni_direcao: TEXT
+uni_telefone_direcao: TEXT
+uni_segmentos: TEXT
+uni_listada: BOOL
+}
+
+entity "tb_salas" as tb4 {
+sala_id: INTEGER <<auto-gerado>>
+sala_nome: TEXT
+sala_comprimento: FLOAT
+sala_largura: FLOAT
+sala_infra: BOOL
+sala_tipo: INTEGER
+uni_id: INTEGER
+}
+
+entity "tb_dispositivos" as tb5 {
+disp_serial: TEXT 
+sala_id: INTEGER
+}
+
+entity "tb_cargo" as tb7 {
+cargo_id: INTEGER <<auto-gerado>>
+cargo_nome: TEXT
+}
+
+entity "tb_nivel_acesso" as tb8 {
+acesso_id: INTEGER <<auto-gerado>>
+acesso_nome: TEXT
+acesso_desc: TEXT
+}
+
+entity "tb_rel_cargo_acesso" as tb9 {
+rca_id: INTEGER <<auto-gerado>>
+cargo_id: INTEGER <<FK>>
+acesso_id: INTEGER <<FK>>
+}
+
+entity "tb_categorias_disp" as tb10 {
+cat_disp_id: INTEGER <<auto-gerado>>
+cat_disp_nome: TEXT
+}
+
+entity "tb_rel_uni_usuario" as tb11 {
+ruu_id: INTEGER <<auto-gerado>>
+uni_id: INTEGER
+usuario_id: INTEGER
+}
+
+tb1 }|..|| tb7
+tb7 }|..|{ tb9
+tb9 }|..|| tb8
+tb3 ||..|{ tb4
+tb5 }|..|| tb10
+tb1 }|..|{ tb2
+tb5 }|..|| tb4
+tb11 ||..|{ tb3
+tb1 }|..|| tb11
+
+
+@enduml

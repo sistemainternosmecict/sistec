@@ -1,6 +1,7 @@
 import hashlib
 from datetime import datetime
-from models.solicitantes import Solicitante_model
+# from models.usuarios import Usuario_model
+from sqlalchemy.inspection import inspect
 #from models.colaboradores import Colaborador_model
 
 class Mensageiro:
@@ -56,12 +57,10 @@ class Ferramentas:
         return {'email_enviado':resultado}
     
     def para_dict(self, obj:object, excluir_campos:list=None) -> dict:
+        dict_temp = obj['usuario'].__dict__.items()
         if excluir_campos is None:
             excluir_campos = []
-        if hasattr(obj, '__table__'):
-            return {column.name: getattr(obj, column.name) for column in obj.__table__.columns if column.name not in excluir_campos}
-        else:
-            return obj.__dict__
+        return {coluna: valor for coluna, valor in dict_temp if not coluna.startswith('_') and coluna not in excluir_campos}
         
     def prepara_demanda_para_insercao_planilha( self, protocolo, dados ) -> list:
         retorno = [
@@ -69,7 +68,7 @@ class Ferramentas:
             "0",
             self.__data_hora.strftime("%d/%m/%Y"),
             "-",
-            self.obter_solicitante_por_id(dados['solicitante']),
+            None,
             dados['tipo'],
             dados['direcionamento'],
             dados['local'],
@@ -123,8 +122,8 @@ class Ferramentas:
             case 6:
                 return "encerrada"
             
-    def obter_solicitante_por_id( self, id_solicitante:int) -> str:
-        solic_model = Solicitante_model()
-        solic_model.solic_id = id_solicitante
-        solic = solic_model.ler()
-        return solic.solic_nome
+    # def obter_solicitante_por_id( self, id_solicitante:int) -> str:
+    #     model = Usuario_model()
+    #     model.usuario_id = id_solicitante
+    #     usuario = model.ler()
+    #     return usuario.usuario_nome

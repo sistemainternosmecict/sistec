@@ -3,17 +3,17 @@ from modules.demandas import Gerenciador_demandas
 from modules.demandas.autenticadorGDrive import Autenticador
 from modules.demandas.gsheet import GSheetManager
 from modules.utilidades.ferramentas import Ferramentas
-from models.colaboradores import Colaborador_model
+# from models.colaboradores import Colaborador_model
+from models.usuarios import Usuario_model
 import threading
 
 bp_demandas = Blueprint('demandas', __name__, url_prefix='/demandas')
 
-def obter_colaborador_por_id( id_colaborador:int):
-        colab_model = Colaborador_model()
-        colab_model.colab_id = id_colaborador
-        colab = colab_model.ler()
-        if id_colaborador != 0:
-            return colab.colab_nome
+def obter_colaborador_por_id( usuario_id:int):
+        model = Usuario_model()
+        usuario = model.ler_pelo_id(usuario_id)["usuario"]
+        if usuario_id > 0:
+            return usuario.usuario_nome
         return "N/D"
 
 def executar_insercao_demanda( resultado_insercao:dict, dados:dict):
@@ -23,6 +23,7 @@ def executar_insercao_demanda( resultado_insercao:dict, dados:dict):
     dados['direcionamento'] = obter_colaborador_por_id(dados['direcionamento'])
     dados['tipo'] = FERRAMENTAS.acertar_tipo_demanda(dados['tipo'])
     dados_formatados = FERRAMENTAS.prepara_demanda_para_insercao_planilha(resultado_insercao['protocolo'], dados)
+    dados_formatados[4] = obter_colaborador_por_id(dados['solicitante'])
     GSHEET.inserir_dados(dados_formatados)
 
 def executar_troca_status_demanda( demanda, dados ):
@@ -65,13 +66,13 @@ def obter_demandas():
 def obter_demanda(protocolo):
     GD = Gerenciador_demandas()
     demanda = GD.obter_demanda_via_protocolo(protocolo)
-    return jsonify({'demandas':demanda})
+    return jsonify(demanda)
 
 @bp_demandas.route("/atualizar", methods=["POST"])
 def atualizar_demanda():
     dados = request.json
     GD = Gerenciador_demandas()
-    demanda = GD.obter_demanda_via_protocolo(dados['protocolo'])
+    demanda = GD.obter_obj_demanda_via_protocolo(dados['protocolo'])
     resultado = demanda.atualizar_demanda(dados)
 
     if 'dem_status' in dados:
