@@ -3,7 +3,6 @@ from modules.demandas import Gerenciador_demandas
 from modules.demandas.autenticadorGDrive import Autenticador
 from modules.demandas.gsheet import GSheetManager
 from modules.utilidades.ferramentas import Ferramentas
-# from models.colaboradores import Colaborador_model
 from models.usuarios import Usuario_model
 import threading
 

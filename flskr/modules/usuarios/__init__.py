@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request, session
 from modules.usuarios import Gerenciador_usuarios, Autenticador, Usuario
+from modules.utilidades.lista_rh import Lista_rh
 
 bp_usuarios = Blueprint('usuarios', __name__, url_prefix='/usuarios')
 bp_auth = Blueprint('auth', __name__, url_prefix='/auth')
@@ -20,9 +21,18 @@ def buscar_usuario(usuario_id):
 @bp_usuarios.route("/atualizar", methods=["POST"])
 def atualizar_usuarios():
     dados = request.json
-    colab = Usuario(dados)
-    resultado = colab.atualizar_usuario(dados)
+    usuario = Usuario(dados)
+    resultado = usuario.atualizar_usuario(dados)
     return jsonify(resultado)
+
+@bp_usuarios.route("/validar/matricula", methods=["POST"])
+def validar_matricula():
+    dados = request.json
+    LRH = Lista_rh()
+    resultado = LRH.buscar_por_matricula(dados['usuario_matricula'])
+    if resultado:
+        return jsonify(resultado)
+    return jsonify({'msg':'A matrícula iserida não foi encontrada em nosso banco de dados! Dirija-se ao CPD da Secretaria de Educação (sala24) para realizar o seu cadastro.'})
 
 @bp_usuarios.route("/registrar", methods=["POST"])
 def registrar_usuario():
