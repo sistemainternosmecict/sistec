@@ -4,14 +4,6 @@ from modules.utilidades.ferramentas import Ferramentas
 class Usuario:
     def __init__(self, dados : dict=None) -> None:
         if dados:
-            # if 'usuario_nome' in dados:
-            #     self.usuario_nome = dados['usuario_nome']
-            # if 'usuario_sala' in dados:
-            #     self.usuario_sala = dados['usuario_sala']
-            # if 'usuario_email' in dados:
-            #     self.usuario_email = dados['usuario_email']
-            # if 'usuario_telefone' in dados:
-            #     self.usuario_telefone = dados['usuario_telefone']
             if 'usuario_id' in dados:
                 self.usuario_id = dados['usuario_id']
 
@@ -21,10 +13,6 @@ class Usuario:
             
     def registrar_usuario(self, dados:dict)-> dict:
         model = Usuario_model(dados)
-        # model.distribuir_dados(dados)
-        # model.usuario_ativo = False
-        # model.usuario_tipo = 4
-        print(model)
         return model.registrar_novo_usuario()
 
     def atualizar_usuario(self, dados:dict) -> dict:
@@ -92,12 +80,6 @@ class Gerenciador_usuarios:
             if not campo in dados:
                 lista_campos.append(campo)
         return lista_campos
-
-    # def ler_arquivo(self):
-    #     pass
-    
-    # def construir_usuario(self, dados:dict) -> Usuario:
-    #     return Usuario(dados)
     
     def registrar_usuario(self, dados : dict) -> dict:
         usuario = Usuario()
@@ -130,6 +112,7 @@ class Gerenciador_usuarios:
                 "usuario_setor":usuario.usuario_setor,
                 "usuario_sala":usuario.usuario_sala,
                 "usuario_cargo":usuario.usuario_cargo,
+                "usuario_funcao":usuario.usuario_funcao,
                 "usuario_telefone":usuario.usuario_telefone,
                 "usuario_email":usuario.usuario_email,
                 "usuario_tipo":usuario.usuario_tipo,

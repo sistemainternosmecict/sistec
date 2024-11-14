@@ -25,12 +25,13 @@ class Usuario_model(Base):
     __tablename__ = 'tb_usuarios'
 
     usuario_id = Column(Integer, primary_key=True, autoincrement=True)
-    usuario_cpf = Column(BigInteger, nullable=False)
-    usuario_nome = Column(String(128), nullable=False)
     usuario_matricula = Column(Integer, nullable=False)
     usuario_setor = Column(String(80), nullable=False)
+    usuario_cargo = Column(String(50), nullable=False)
+    usuario_nome = Column(String(128), nullable=False)
+    usuario_funcao = Column(String(50), nullable=False)
     usuario_sala = Column(String(4), nullable=False)
-    usuario_cargo = Column(Integer)
+    usuario_cpf = Column(BigInteger, nullable=False)
     usuario_email = Column(String(100), unique=True, nullable=False)
     usuario_telefone = Column(BigInteger)
     usuario_senha = Column(String(100), nullable=False)
@@ -55,6 +56,7 @@ class Usuario_model(Base):
         usuario_setor={self.usuario_setor}, 
         usuario_sala={self.usuario_sala}, 
         usuario_cargo={self.usuario_cargo}, 
+        usuario_funcao={self.usuario_funcao}, 
         usuario_email={self.usuario_email}, 
         usuario_telefone={self.usuario_telefone}, 
         usuario_tipo={self.usuario_tipo}, 
@@ -73,6 +75,8 @@ class Usuario_model(Base):
             self.usuario_sala = dados['usuario_sala']
         if 'usuario_cargo' in dados:
             self.usuario_cargo = dados['usuario_cargo']
+        if 'usuario_funcao' in dados:
+            self.usuario_funcao = dados['usuario_funcao']
         if 'usuario_email' in dados:
             self.usuario_email = dados['usuario_email']
         if 'usuario_telefone' in dados:
