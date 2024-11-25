@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, request, session
-from modules.usuarios import Gerenciador_usuarios, Autenticador, Usuario
+from modules.usuarios import Gerenciador_usuarios, Autenticador, Usuario, GerenciadorNiveisAcesso, GerenciadorPermissoes
 from modules.utilidades.lista_rh import Lista_rh
 
 bp_usuarios = Blueprint('usuarios', __name__, url_prefix='/usuarios')
 bp_auth = Blueprint('auth', __name__, url_prefix='/auth')
+bp_niveis_acesso = Blueprint('niveis_acesso', __name__, url_prefix='/niveis_acesso')
+bp_permissoes = Blueprint('permissoes', __name__, url_prefix='/permissoes')
 bp_usuarios.register_blueprint(bp_auth)
 
 @bp_usuarios.route("/listar")
@@ -48,7 +50,7 @@ def remover_usuario():
     GD = Gerenciador_usuarios()
     resultado = GD.remover_usuario_via_id(dados['usuario_id'])
     return jsonify(resultado)
-
+########################################################################################################################
 @bp_auth.route('/login', methods=['POST', 'OPTIONS'])
 def login():
     if request.is_json:
@@ -65,3 +67,66 @@ def login():
 def logout():
     session.pop('usuario', None)
     return jsonify({'msg':'Usuario deslogado!'})
+#####################################################################################################################
+@bp_niveis_acesso.route('/listar', methods=['GET'])
+def obter_niveis_acesso():
+    GNA = GerenciadorNiveisAcesso()
+    lista = GNA.listar_niveis_acessos()
+    return jsonify(lista)
+
+@bp_niveis_acesso.route('/buscar/<int:nivel_acesso_id>', methods=['GET'])
+def buscar_nivel_acesso(nivel_acesso_id):
+    GNA = GerenciadorNiveisAcesso()
+    nivel_acesso = GNA.buscar_nivel(nivel_acesso_id)
+    dados = nivel_acesso.obter_dados()
+    return jsonify(dados)
+
+@bp_niveis_acesso.route('/atualizar', methods=['POST'])
+def atualizar_nivel_acesso():
+    dados = request.json
+    GNA = GerenciadorNiveisAcesso()
+    nivel_acesso = GNA.buscar_nivel(dados['nva_id'])
+    if nivel_acesso:
+        resultado = nivel_acesso.atualizar(dados)
+        return jsonify(resultado)
+    return jsonify({'msg':'Nivel de acesso não encontrado!'})
+
+@bp_niveis_acesso.route('/remover', methods=['POST'])
+def remover_nivel_acesso():
+    dados = request.json
+    GNA = GerenciadorNiveisAcesso()
+    resultado = GNA.remover_nivel(dados["nva_id"])
+    return jsonify(resultado)
+
+#################################################################################################################
+
+@bp_permissoes.route('/registrar', methods=['POST'])
+def registrar_permissao():
+    dados = request.json
+    print(dados)
+    GP = GerenciadorPermissoes()
+    resultado = GP.registrar_permissao(dados)
+    return jsonify(resultado)
+
+@bp_permissoes.route("/listar", methods=['GET'])
+def listar_permissoes():
+    GP = GerenciadorPermissoes()
+    lista = GP.obter_permissoes()
+    return jsonify(lista)
+
+@bp_permissoes.route("/buscar/<int:permissao_id>", methods=['GET'])
+def buscar_permissao(permissao_id):
+    GP = GerenciadorPermissoes()
+    permissao = GP.buscar_permissao(permissao_id)
+    dados = permissao.obter_dados()
+    return jsonify(dados)
+
+@bp_permissoes.route("/atualizar", methods=['POST'])
+def atualizar_permissao():
+    dados = request.json
+    GP = GerenciadorPermissoes()
+    permissao = GP.buscar_permissao(dados['perm_id'])
+    if permissao:
+        resultado = permissao.atualizar(dados)
+        return jsonify(resultado)
+    return jsonify({'msg':'Permissão não encontrada!'})

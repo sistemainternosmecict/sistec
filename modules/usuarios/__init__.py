@@ -1,5 +1,7 @@
 from models.usuarios import Usuario_model
 from modules.utilidades.ferramentas import Ferramentas
+from models.niveis_acesso import NiveisAcesso_model
+from models.permissoes import Permissao_model
 
 class Usuario:
     def __init__(self, dados : dict=None) -> None:
@@ -120,3 +122,154 @@ class Gerenciador_usuarios:
             }
             usuarios_temp.append(usuario_dict)
         return {"usuarios":usuarios_temp}
+    
+class NivelDeAcesso:
+    def __init__(self, dados: dict = None):
+        if dados:
+            for chave, valor in dados.items():
+                setattr(self, chave, valor)
+
+    def registrar(self):
+        if(type(self.nva_nome) == str and type(self.nva_desc) == str):
+            model = NiveisAcesso_model({"nva_nome":self.nva_nome, "nva_desc":self.nva_desc})
+            return model.registrar_novo_nivel()
+        return {'registro':False}
+
+    def atualizar(self, dados:dict):
+        model = NiveisAcesso_model()
+        return model.atualizar_nivel(**dados)
+    
+    def remover(self):
+        model = NiveisAcesso_model()
+        return model.remover_nivel(self.nva_id)
+    
+    def obter_dados(self):
+        return self.__dict__
+
+class GerenciadorNiveisAcesso:
+    def __init__(self):
+        self.__niveis_acessos = []
+        self.__carregar_dados()
+
+    def __carregar_dados(self):
+        model = NiveisAcesso_model()
+        niveis = model.ler_todos_os_niveis()
+        todos_niveis = niveis['todos_niveis']
+        for model in todos_niveis:
+            nivel = {
+                "nva_id": model.nva_id,
+                "nva_nome": model.nva_nome,
+                "nva_desc": model.nva_desc
+            }
+            self.__niveis_acessos.append(nivel)
+
+    def buscar_nivel(self, nva_id):
+        for nivel in self.__niveis_acessos:
+            if nivel["nva_id"] == nva_id:
+                return NivelDeAcesso(nivel)
+        return None
+
+    def regitrar_novo_nivel(self, dados:dict=None):
+        nivel_acesso = NivelDeAcesso(dados)
+        resultado = nivel_acesso.registrar()
+        self.__niveis_acessos.append({**nivel_acesso.obter_dados(), "nva_id":resultado['id']})
+        return resultado
+    
+    def listar_niveis_acessos(self):
+        return [nivel for nivel in self.__niveis_acessos]
+    
+    def atualizar_nivel(self, id:int, dados:dict):
+        for nivel in self.__niveis_acessos:
+            if nivel["nva_id"] == id:
+                nivel["nva_nome"] = dados["nva_nome"]
+                nivel["nva_desc"] = dados["nva_desc"]
+                nivel_obj = NivelDeAcesso()
+                return nivel_obj.atualizar(dados)
+        return {'atualizado': False}
+    
+    def remover_nivel(self, id:int):
+        for nivel in self.__niveis_acessos:
+            if nivel["nva_id"] == id:
+                self.__niveis_acessos.remove(nivel)
+                nivel_obj = NivelDeAcesso({"nva_id": id})
+                return nivel_obj.remover()
+        return {'removido': False}
+    
+class Permissao:
+    def __init__(self, dados: dict = None):
+        if dados:
+            for chave, valor in dados.items():
+                setattr(self, chave, valor)
+
+    def registrar(self):
+        if(type(self.perm_nome) == str and type(self.perm_desc) == str):
+            model = Permissao_model()
+            return model.registrar({"perm_nome":self.perm_nome, "perm_desc":self.perm_desc})
+        return {'registro':False}
+    
+    def atualizar(self, dados:dict):
+        model = Permissao_model()
+        return model.atualizar(**dados)
+    
+    def remover(self, perm_id:int):
+        model = Permissao_model()
+        return model.remover_permissao(perm_id)
+    
+    def ler_por_id(self, perm_id:int):
+        model = Permissao_model()
+        res = model.ler_por_id(perm_id)
+        self.perm_id = res.perm_id
+        self.perm_nome = res.perm_nome
+        self.perm_desc = res.perm_desc
+        return self
+    
+    def obter_dados(self):
+        return self.__dict__
+    
+class GerenciadorPermissoes:
+    def __init__(self):
+        self.__permissoes = []
+        self.__carregar_dados()
+
+    def __carregar_dados(self):
+        model = Permissao_model()
+        permissoes = model.ler_todos()
+        for perm in permissoes:
+            temp = {"perm_id": perm.perm_id, "perm_nome": perm.perm_nome, "perm_desc":perm.perm_desc}
+            self.__permissoes.append(Permissao(temp))
+
+    def obter_permissoes(self):
+        return [perm.obter_dados() for perm in self.__permissoes]
+    
+    def buscar_permissao(self, perm_id:int):
+        for perm in self.__permissoes:
+            if perm.perm_id == perm_id:
+                return perm
+        return None
+    
+    def registrar_permissao(self, dados: dict):
+        perm = Permissao(dados)
+        resultado = perm.registrar()
+        self.__permissoes.append(perm)
+        return resultado
+    
+    def atualizar_permissao(self, dados: dict):
+        for perm in self.__permissoes:
+            if perm.perm_id == dados['perm_id']:
+                res = perm.atualizar(dados)
+                if res['atualizado']:
+                    if 'perm_nome' in dados:
+                        perm.perm_nome = dados['perm_nome']
+                    if 'perm_desc' in dados:
+                        perm.perm_desc = dados['perm_desc']
+                    return res
+        return None
+    
+    def remover_permissao(self, perm_id: int):
+        for idx, perm in enumerate(self.__permissoes):
+            if perm.perm_id == perm_id:
+                res = perm.remover(perm_id)
+                if res['removido']:
+                    self.__permissoes.pop(idx)
+                    return res
+        return None

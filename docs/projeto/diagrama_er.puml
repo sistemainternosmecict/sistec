@@ -1,4 +1,4 @@
-@startuml testando
+@startuml
 !theme plain
 entity "tb_usuarios" as tb1 {
 usuario_id: INTEGER <<auto-gerado>>
@@ -65,20 +65,20 @@ disp_serial: TEXT
 sala_id: INTEGER
 }
 
-entity "tb_cargo" as tb7 {
-cargo_id: INTEGER <<auto-gerado>>
-cargo_nome: TEXT
-}
-
-entity "tb_nivel_acesso" as tb8 {
+entity "tb_nivel_acesso" as tb7 {
 acesso_id: INTEGER <<auto-gerado>>
 acesso_nome: TEXT
 acesso_desc: TEXT
 }
 
-entity "tb_rel_cargo_acesso" as tb9 {
-rca_id: INTEGER <<auto-gerado>>
-cargo_id: INTEGER <<FK>>
+entity "tb_permissao" as tb8 {
+perm_id: INTEGER <<auto-gerado>>
+perm_nome: TEXT
+}
+
+entity "tb_rel_acesso_perm" as tb9 {
+rap_id: INTEGER <<auto-gerado>>
+perm_id: INTEGER <<FK>>
 acesso_id: INTEGER <<FK>>
 }
 
@@ -102,6 +102,4 @@ tb1 }|..|{ tb2
 tb5 }|..|| tb4
 tb11 ||..|{ tb3
 tb1 }|..|| tb11
-
-
 @enduml

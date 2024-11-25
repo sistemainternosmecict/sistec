@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+SQL.py
 
 controledemandasti.json
 

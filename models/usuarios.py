@@ -25,7 +25,7 @@ class Usuario_model(Base):
     __tablename__ = 'tb_usuarios'
 
     usuario_id = Column(Integer, primary_key=True, autoincrement=True)
-    usuario_matricula = Column(Integer, nullable=False)
+    usuario_matricula = Column(String(15), nullable=False)
     usuario_setor = Column(String(80), nullable=False)
     usuario_cargo = Column(String(50), nullable=False)
     usuario_nome = Column(String(128), nullable=False)
