@@ -1,7 +1,5 @@
-from modules.usuarios import GerenciadorPermissoes
+from models.rel_acesso_perm import RelAcessoPermn_model
 
-ger_per = GerenciadorPermissoes()
-# res = ger_per.registrar_permissao({"perm_nome": "test3", "perm_desc":"teste de descrição"})
-# res = ger_per.atualizar_permissao({"perm_id": 1, "perm_desc":"teste"})
-res = ger_per.remover_permissao(1)
+rap_model = RelAcessoPermn_model()
+res = rap_model.remover_rel_acesso_perm(1)
 print(res)
