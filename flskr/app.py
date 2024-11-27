@@ -9,7 +9,7 @@ def create_app():
     root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sys.path.append(os.path.join(root_path, 'modules'))
 
-    from .modules.usuarios import bp_usuarios, bp_niveis_acesso, bp_permissoes
+    from .modules.usuarios import bp_usuarios, bp_niveis_acesso, bp_permissoes, bp_rap
     from .modules.demandas import bp_demandas
 
     bp_api = Blueprint('api', __name__, url_prefix='/api')
@@ -17,6 +17,7 @@ def create_app():
     bp_api.register_blueprint(bp_usuarios)
     bp_api.register_blueprint(bp_niveis_acesso)
     bp_api.register_blueprint(bp_permissoes)
+    bp_api.register_blueprint(bp_rap)
     bp_api.register_blueprint(bp_demandas)
     app.register_blueprint(bp_api)
 

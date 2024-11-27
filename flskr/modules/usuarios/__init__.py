@@ -1,11 +1,12 @@
 from flask import Blueprint, jsonify, request, session
-from modules.usuarios import Gerenciador_usuarios, Autenticador, Usuario, GerenciadorNiveisAcesso, GerenciadorPermissoes
+from modules.usuarios import Gerenciador_usuarios, Autenticador, Usuario, GerenciadorNiveisAcesso, GerenciadorPermissoes, Gerenciador_rap
 from modules.utilidades.lista_rh import Lista_rh
 
 bp_usuarios = Blueprint('usuarios', __name__, url_prefix='/usuarios')
 bp_auth = Blueprint('auth', __name__, url_prefix='/auth')
 bp_niveis_acesso = Blueprint('niveis_acesso', __name__, url_prefix='/niveis_acesso')
 bp_permissoes = Blueprint('permissoes', __name__, url_prefix='/permissoes')
+bp_rap = Blueprint('rap', __name__, url_prefix='/rap')
 bp_usuarios.register_blueprint(bp_auth)
 
 @bp_usuarios.route("/listar")
@@ -103,7 +104,6 @@ def remover_nivel_acesso():
 @bp_permissoes.route('/registrar', methods=['POST'])
 def registrar_permissao():
     dados = request.json
-    print(dados)
     GP = GerenciadorPermissoes()
     resultado = GP.registrar_permissao(dados)
     return jsonify(resultado)
@@ -130,3 +130,26 @@ def atualizar_permissao():
         resultado = permissao.atualizar(dados)
         return jsonify(resultado)
     return jsonify({'msg':'Permissão não encontrada!'})
+
+
+########################################################################################################
+
+@bp_rap.route('/listar')
+def listar_rap():
+    GR = Gerenciador_rap()
+    lista = GR.listar_relacoes_acesso_perm()
+    return jsonify({'resultados':lista})
+
+@bp_rap.route('/registrar', methods=["POST"])
+def registrar_rap():
+    dados = request.json
+    GR = Gerenciador_rap()
+    resultado = GR.registrar_relacao_acesso_perm(dados)
+    return jsonify(resultado)
+
+@bp_rap.route('/remover', methods=["POST"])
+def remover_rap():
+    dados = request.json
+    GR = Gerenciador_rap()
+    resultado = GR.remover_relacao_acesso_perm(dados['rap_id'])
+    return jsonify(resultado)

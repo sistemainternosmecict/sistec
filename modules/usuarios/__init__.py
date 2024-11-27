@@ -2,6 +2,7 @@ from models.usuarios import Usuario_model
 from modules.utilidades.ferramentas import Ferramentas
 from models.niveis_acesso import NiveisAcesso_model
 from models.permissoes import Permissao_model
+from models.rel_acesso_perm import RelAcessoPermn_model
 
 class Usuario:
     def __init__(self, dados : dict=None) -> None:
@@ -271,5 +272,63 @@ class GerenciadorPermissoes:
                 res = perm.remover(perm_id)
                 if res['removido']:
                     self.__permissoes.pop(idx)
+                    return res
+        return None
+    
+class Rel_acesso_perm:
+    def __init__(self, dados: dict = None):
+        if dados:
+            for chave, valor in dados.items():
+                setattr(self, chave, valor)
+    
+    def registrar(self):
+        if(type(self.rap_acesso_id) == int and type(self.rap_perm_id) == int):
+            model = RelAcessoPermn_model({"rap_acesso_id":self.rap_acesso_id, "rap_perm_id":self.rap_perm_id})
+            return model.registrar_novo_rel_acesso_perm()
+        return {'registro':False}
+    
+    def remover(self):
+        model = RelAcessoPermn_model()
+        return model.remover_rel_acesso_perm(self.rap_id)
+    
+    def obter_dados(self):
+        return self.__dict__
+    
+class Gerenciador_rap:
+    def __init__(self):
+        self.__relacoes_acesso_perm = []
+        self.__carregar_dados()
+
+    def __carregar_dados(self):
+        model = RelAcessoPermn_model()
+        relacoes = model.ler_todos()
+        for relacao in relacoes:
+            temp = {"rap_id": relacao.rap_id, "rap_acesso_id": relacao.rap_acesso_id, "rap_perm_id": relacao.rap_perm_id}
+            self.__relacoes_acesso_perm.append(Rel_acesso_perm(temp))
+
+    def listar_relacoes_acesso_perm(self):
+        return [rel.obter_dados() for rel in self.__relacoes_acesso_perm]
+    
+    def obter_relacoes_acesso_perm(self):
+        return [rel for rel in self.__relacoes_acesso_perm]
+    
+    def buscar_relacao_acesso_perm(self, rap_id:int):
+        for rel in self.__relacoes_acesso_perm:
+            if rel.rap_id == rap_id:
+                return rel
+        return None
+    
+    def registrar_relacao_acesso_perm(self, dados: dict):
+        rel = Rel_acesso_perm(dados)
+        resultado = rel.registrar()
+        self.__relacoes_acesso_perm.append(rel)
+        return resultado
+    
+    def remover_relacao_acesso_perm(self, rap_id: int):
+        for idx, rel in enumerate(self.__relacoes_acesso_perm):
+            if rel.rap_id == rap_id:
+                res = rel.remover()
+                if res['removido']:
+                    self.__relacoes_acesso_perm.pop(idx)
                     return res
         return None
