@@ -35,7 +35,7 @@ def validar_matricula():
     resultado = LRH.buscar_por_matricula(dados['usuario_matricula'])
     if resultado:
         return jsonify(resultado)
-    return jsonify({'msg':'A matrícula iserida não foi encontrada em nosso banco de dados! Dirija-se ao CPD da Secretaria de Educação (sala24) para realizar o seu cadastro.'})
+    return jsonify({'msg':'A matrícula inserida não foi encontrada em nosso banco de dados! Dirija-se ao CPD da Secretaria de Educação (sala24) para realizar o seu cadastro.'})
 
 @bp_usuarios.route("/registrar", methods=["POST"])
 def registrar_usuario():
@@ -51,6 +51,7 @@ def remover_usuario():
     GD = Gerenciador_usuarios()
     resultado = GD.remover_usuario_via_id(dados['usuario_id'])
     return jsonify(resultado)
+
 ########################################################################################################################
 @bp_auth.route('/login', methods=['POST', 'OPTIONS'])
 def login():
@@ -68,6 +69,7 @@ def login():
 def logout():
     session.pop('usuario', None)
     return jsonify({'msg':'Usuario deslogado!'})
+
 #####################################################################################################################
 @bp_niveis_acesso.route('/listar', methods=['GET'])
 def obter_niveis_acesso():
@@ -130,7 +132,6 @@ def atualizar_permissao():
         resultado = permissao.atualizar(dados)
         return jsonify(resultado)
     return jsonify({'msg':'Permissão não encontrada!'})
-
 
 ########################################################################################################
 

@@ -12,13 +12,23 @@ class Lista_rh:
 
         for row in sheet.iter_rows(min_row=2, values_only=True):
             registro = {
-                'local_de_trabalho': row[0],
-                'matricula': row[1],
+                'local_de_trabalho': row[4],
+                'matricula': row[0],
                 'nome': row[2],
-                'cargo': row[3],
+                'cargo': row[3]
             }
             self.__funcionarios.append(registro)
+        # print(self.__funcionarios)
     
     def buscar_por_matricula(self, matricula):
         matricula_temp = matricula.split('-')[0]
-        return next((funcionario for funcionario in self.__funcionarios if funcionario['matricula'].split('-')[0] == matricula_temp), None)
+        matricula_temp_sem_ultimo = matricula_temp[:-1]
+
+        resultado1 = next((funcionario for funcionario in self.__funcionarios if funcionario['matricula'] == matricula_temp_sem_ultimo), None)
+        resultado2 = next((funcionario for funcionario in self.__funcionarios if funcionario['matricula'] == matricula_temp), None)
+
+        if resultado1:
+            return resultado1
+        
+        if resultado2:
+            return resultado2

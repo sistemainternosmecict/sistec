@@ -39,9 +39,9 @@ class Usuario_model(Base):
     usuario_ativo = Column(Boolean)
 
     def __init__(self, dados:dict=None):
-        db_url = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-        self.engine = create_engine(db_url, echo=True)
-        # self.engine = create_engine('sqlite:///usuarios.db', echo=True)
+        # db_url = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+        # self.engine = create_engine(db_url, echo=True)
+        self.engine = create_engine('sqlite:///usuarios.db', echo=True)
         self.Session = sessionmaker(bind=self.engine)
         self.session = self.Session()
         Base.metadata.create_all(self.engine)
