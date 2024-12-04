@@ -30,11 +30,18 @@ def atualizar_usuarios():
 
 @bp_usuarios.route("/validar/matricula", methods=["POST"])
 def validar_matricula():
+    GU = Gerenciador_usuarios()
     dados = request.json
+    matricula_temp = dados['usuario_matricula'].split('-')[0]
+    matricula_temp_sem_ultimo = matricula_temp[:-1]
     LRH = Lista_rh()
     resultado = LRH.buscar_por_matricula(dados['usuario_matricula'])
     if resultado:
-        return jsonify(resultado)
+        todos_usuarios = GU.obter_todos_os_usuarios()
+        for usuario in todos_usuarios['usuarios']:
+            if usuario['usuario_matricula'] != matricula_temp:
+                return jsonify(resultado)
+            return jsonify({"msg":"Matricula já cadastrada!"})
     return jsonify({'msg':'A matrícula inserida não foi encontrada em nosso banco de dados! Dirija-se ao CPD da Secretaria de Educação (sala24) para realizar o seu cadastro.'})
 
 @bp_usuarios.route("/registrar", methods=["POST"])

@@ -38,6 +38,7 @@ class Demanda_model(Base):
     def __init__(self):
         db_url = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
         self.engine = create_engine(db_url, echo=True)
+        # self.engine = create_engine('sqlite:///demandas.db', echo=True)
         self.Session = sessionmaker(bind=self.engine)
         self.session = self.Session()
         Base.metadata.create_all(self.engine)
