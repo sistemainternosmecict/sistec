@@ -11,7 +11,7 @@ load_dotenv()
 # Construir a URL do banco de dados usando as variáveis de ambiente
 db_user = os.getenv("DB_USER")
 db_password = os.getenv("DB_PASSWORD")
-db_host = os.getenv("DB_HOST")
+db_host = os.getenv("DB_HOST", "localhost")
 db_port = os.getenv("DB_PORT")
 db_name = os.getenv("DB_NAME")
 
