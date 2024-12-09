@@ -2,8 +2,8 @@ from sqlalchemy import create_engine, Column, Integer, String, Boolean, BigInteg
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.exc import IntegrityError
 from modules.utilidades.ferramentas import Ferramentas
-from dotenv import load_dotenv
 import logging, os
+from dotenv import load_dotenv
 
 # Carregar as variáveis do .env
 load_dotenv()
@@ -26,6 +26,7 @@ class Usuario_model(Base):
 
     usuario_id = Column(Integer, primary_key=True, autoincrement=True)
     usuario_matricula = Column(String(15), nullable=False)
+    usuario_vinculo = Column(String(100))
     usuario_setor = Column(String(80), nullable=False)
     usuario_cargo = Column(String(50), nullable=False)
     usuario_nome = Column(String(128), nullable=False)
@@ -87,6 +88,8 @@ class Usuario_model(Base):
             self.usuario_tipo = dados['usuario_tipo']
         if 'usuario_ativo' in dados:
             self.usuario_ativo = dados['usuario_ativo']
+        if 'usuario_vinculo' in dados:
+            self.usuario_vinculo = dados['usuario_vinculo']
     
     def obter_hash(self) -> str: #ferramenta interna do modelo que utiliza ferramenta externa
         FERRAMENTAS = Ferramentas()

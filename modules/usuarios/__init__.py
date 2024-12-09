@@ -119,7 +119,8 @@ class Gerenciador_usuarios:
                 "usuario_telefone":usuario.usuario_telefone,
                 "usuario_email":usuario.usuario_email,
                 "usuario_tipo":usuario.usuario_tipo,
-                "usuario_ativo":usuario.usuario_ativo
+                "usuario_ativo":usuario.usuario_ativo,
+                "usuario_vinculo":usuario.usuario_vinculo
             }
             usuarios_temp.append(usuario_dict)
         return {"usuarios":usuarios_temp}
