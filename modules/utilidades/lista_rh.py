@@ -11,12 +11,24 @@ class Lista_rh:
         sheet = wb.active
 
         for row in sheet.iter_rows(min_row=2, values_only=True):
+            local = None
+            setor = None
+
+            if row != None:
+                if row[4] is not None:
+                    temp = row[4].split('-')
+                    local = temp[0]
+                    # if len(temp) > 1:
+                    #     setor = temp[1]
+
             registro = {
-                'local_de_trabalho': row[4],
+                'local_de_trabalho': local,
+                'local_setor': setor,
                 'matricula': row[0],
                 'nome': row[2],
                 'cargo': row[3]
             }
+
             self.__funcionarios.append(registro)
         # print(self.__funcionarios)
     

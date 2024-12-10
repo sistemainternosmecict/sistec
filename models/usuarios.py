@@ -27,6 +27,7 @@ class Usuario_model(Base):
     usuario_id = Column(Integer, primary_key=True, autoincrement=True)
     usuario_matricula = Column(String(15), nullable=False)
     usuario_vinculo = Column(String(100))
+    usuario_local = Column(String(80), nullable=False)
     usuario_setor = Column(String(80), nullable=False)
     usuario_cargo = Column(String(50), nullable=False)
     usuario_nome = Column(String(128), nullable=False)
@@ -90,6 +91,8 @@ class Usuario_model(Base):
             self.usuario_ativo = dados['usuario_ativo']
         if 'usuario_vinculo' in dados:
             self.usuario_vinculo = dados['usuario_vinculo']
+        if 'usuario_local' in dados:
+            self.usuario_local = dados['usuario_local']
     
     def obter_hash(self) -> str: #ferramenta interna do modelo que utiliza ferramenta externa
         FERRAMENTAS = Ferramentas()
