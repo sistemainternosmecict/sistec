@@ -15,8 +15,7 @@ class Lista_rh:
 
             if row != None:
                 if row[4] is not None:
-                    temp = row[4].split('-')
-                    local = temp[0]
+                    local = row[4]
 
             registro = {
                 'local_de_trabalho': local,
