@@ -12,18 +12,14 @@ class Lista_rh:
 
         for row in sheet.iter_rows(min_row=2, values_only=True):
             local = None
-            setor = None
 
             if row != None:
                 if row[4] is not None:
                     temp = row[4].split('-')
                     local = temp[0]
-                    # if len(temp) > 1:
-                    #     setor = temp[1]
 
             registro = {
                 'local_de_trabalho': local,
-                'local_setor': setor,
                 'matricula': row[0],
                 'nome': row[2],
                 'cargo': row[3]

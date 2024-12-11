@@ -39,6 +39,7 @@ class Usuario_model(Base):
     usuario_senha = Column(String(100), nullable=False)
     usuario_tipo = Column(Integer, nullable=False)
     usuario_ativo = Column(Boolean)
+    usuario_situacao_rh = Column(String(100))
 
     def __init__(self, dados:dict=None):
         db_url = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
@@ -93,6 +94,8 @@ class Usuario_model(Base):
             self.usuario_vinculo = dados['usuario_vinculo']
         if 'usuario_local' in dados:
             self.usuario_local = dados['usuario_local']
+        if 'usuario_situacao_rh' in dados:
+            self.usuario_situacao_rh = dados['usuario_situacao_rh']
     
     def obter_hash(self) -> str: #ferramenta interna do modelo que utiliza ferramenta externa
         FERRAMENTAS = Ferramentas()
