@@ -153,8 +153,31 @@ def listar_rap():
 def registrar_rap():
     dados = request.json
     GR = Gerenciador_rap()
+    
+    # Se o campo 'ativo' não for passado, vamos adicionar o valor padrão True
+    if 'ativo' not in dados:
+        dados['ativo'] = False
+    
     resultado = GR.registrar_relacao_acesso_perm(dados)
     return jsonify(resultado)
+
+
+@bp_rap.route('/atualizar', methods=["POST"])
+def atualizar_rap():
+    dados = request.json
+    rap_id = dados.get('rap_id')
+    novos_dados = {key: value for key, value in dados.items() if key != 'rap_id'}
+
+    if not rap_id:
+        return jsonify({'atualizado': False, 'msg': 'ID do relacionamento (rap_id) não fornecido.'}), 400
+
+    if not novos_dados:
+        return jsonify({'atualizado': False, 'msg': 'Nenhum dado para atualizar fornecido.'}), 400
+    
+    GR = Gerenciador_rap()
+    resultado = GR.atualizar_relacao_acesso_perm(rap_id, novos_dados)
+    return jsonify(resultado)
+
 
 @bp_rap.route('/remover', methods=["POST"])
 def remover_rap():

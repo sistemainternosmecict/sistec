@@ -285,18 +285,34 @@ class Rel_acesso_perm:
                 setattr(self, chave, valor)
     
     def registrar(self):
-        if(type(self.rap_acesso_id) == int and type(self.rap_perm_id) == int):
-            model = RelAcessoPermn_model({"rap_acesso_id":self.rap_acesso_id, "rap_perm_id":self.rap_perm_id})
+        if type(self.rap_acesso_id) == int and type(self.rap_perm_id) == int:
+            # Passando o valor de 'ativo' se estiver presente em 'dados'
+            model = RelAcessoPermn_model({"rap_acesso_id": self.rap_acesso_id, 
+                                          "rap_perm_id": self.rap_perm_id, 
+                                          "rap_ativo": getattr(self, 'rap_ativo', True)})  # Default para True
             return model.registrar_novo_rel_acesso_perm()
-        return {'registro':False}
+        return {'registro': False}
     
     def remover(self):
         model = RelAcessoPermn_model()
         return model.remover_rel_acesso_perm(self.rap_id)
     
+    def atualizar(self, novos_dados: dict):
+        """
+        Atualiza os atributos de uma relação específica com base em novos dados.
+        """
+        model = RelAcessoPermn_model()
+        novos_dados['rap_id'] = self.rap_id  # Garante que o ID atual seja utilizado para buscar o registro
+        resultado = model.atualizar(**novos_dados)
+        if resultado.get('atualizado'):
+            # Atualiza os atributos locais se a atualização no banco for bem-sucedida
+            for chave, valor in novos_dados.items():
+                setattr(self, chave, valor)
+        return resultado
+    
     def obter_dados(self):
         return self.__dict__
-    
+  
 class Gerenciador_rap:
     def __init__(self):
         self.__relacoes_acesso_perm = []
@@ -306,7 +322,8 @@ class Gerenciador_rap:
         model = RelAcessoPermn_model()
         relacoes = model.ler_todos()
         for relacao in relacoes:
-            temp = {"rap_id": relacao.rap_id, "rap_acesso_id": relacao.rap_acesso_id, "rap_perm_id": relacao.rap_perm_id}
+            temp = {"rap_id": relacao.rap_id, "rap_acesso_id": relacao.rap_acesso_id, 
+                    "rap_perm_id": relacao.rap_perm_id, "rap_ativo": relacao.rap_ativo}  # Incluindo o 'ativo'
             self.__relacoes_acesso_perm.append(Rel_acesso_perm(temp))
 
     def listar_relacoes_acesso_perm(self):
@@ -315,13 +332,14 @@ class Gerenciador_rap:
     def obter_relacoes_acesso_perm(self):
         return [rel for rel in self.__relacoes_acesso_perm]
     
-    def buscar_relacao_acesso_perm(self, rap_id:int):
+    def buscar_relacao_acesso_perm(self, rap_id: int):
         for rel in self.__relacoes_acesso_perm:
             if rel.rap_id == rap_id:
                 return rel
         return None
     
     def registrar_relacao_acesso_perm(self, dados: dict):
+        # Passando o valor de 'ativo' se estiver presente nos dados
         rel = Rel_acesso_perm(dados)
         resultado = rel.registrar()
         self.__relacoes_acesso_perm.append(rel)
@@ -335,3 +353,12 @@ class Gerenciador_rap:
                     self.__relacoes_acesso_perm.pop(idx)
                     return res
         return None
+    
+    def atualizar_relacao_acesso_perm(self, rap_id: int, novos_dados: dict):
+        """
+        Atualiza os dados de uma relação específica.
+        """
+        rel = self.buscar_relacao_acesso_perm(rap_id)
+        if rel:
+            return rel.atualizar(novos_dados)
+        return {'atualizado': False, 'msg': 'Relação não encontrada.'}
