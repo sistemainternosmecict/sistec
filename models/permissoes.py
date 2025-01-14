@@ -3,10 +3,8 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
 import logging, os
 
-# Carregar as variáveis do .env
 load_dotenv()
 
-# Construir a URL do banco de dados usando as variáveis de ambiente
 db_user = os.getenv("DB_USER")
 db_password = os.getenv("DB_PASSWORD")
 db_host = os.getenv("DB_HOST")
@@ -28,8 +26,7 @@ class Permissao_model(Base):
 
     def __init__(self, dados: dict = None):
         db_url = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-        # self.engine = create_engine('sqlite:///permissoes.db', echo=True)
-        self.engine = create_engine(db_url, echo=True)
+        self.engine = create_engine(db_url, echo=True, pool_size=10, max_overflow=20, pool_timeout=30, pool_recycle=3600)
         self.Session = sessionmaker(bind=self.engine)
         self.session = self.Session()
         Base.metadata.create_all(self.engine)

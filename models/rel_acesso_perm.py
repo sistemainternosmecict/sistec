@@ -29,7 +29,6 @@ class RelAcessoPermn_model(Base):
 
     def __init__(self, dados: dict = None):
         db_url = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-        # self.engine = create_engine('sqlite:///rel_acesso_perm.db', echo=True)
         self.engine = create_engine(db_url, echo=True, pool_size=10, max_overflow=20, pool_timeout=30, pool_recycle=3600)
         self.Session = sessionmaker(bind=self.engine)
         self.session = self.Session()
