@@ -25,6 +25,20 @@ def list_pdfs(directory):
     
     return files_info
 
+def limpar_pdfs():
+    if not os.path.isdir("./export"):
+        print(f"O diretório './export' não existe ou não é válido.")
+        return
+
+    for arquivo in os.listdir("./export"):
+        caminho_arquivo = os.path.join("./export", arquivo)
+        if arquivo.endswith(".pdf") and os.path.isfile(caminho_arquivo):
+            try:
+                os.remove(caminho_arquivo)
+                print(f"Removido: {caminho_arquivo}")
+            except Exception as e:
+                print(f"Erro ao excluir {caminho_arquivo}: {e}")
+
 @bp_termos.route("/gerar", methods=["POST"])
 def gerar_um_termo():
     dados = request.json

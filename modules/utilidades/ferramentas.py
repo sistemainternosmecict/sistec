@@ -1,4 +1,4 @@
-import hashlib
+import hashlib, os
 from datetime import datetime
 # from models.usuarios import Usuario_model
 from sqlalchemy.inspection import inspect
@@ -122,8 +122,16 @@ class Ferramentas:
             case 6:
                 return "encerrada"
             
-    # def obter_solicitante_por_id( self, id_solicitante:int) -> str:
-    #     model = Usuario_model()
-    #     model.usuario_id = id_solicitante
-    #     usuario = model.ler()
-    #     return usuario.usuario_nome
+    def limpar_pdfs(self, diretorio):
+        if not os.path.isdir(diretorio):
+            print(f"[ERRO] O diretório {diretorio} não existe ou não é válido.")
+            return
+
+        for arquivo in os.listdir(diretorio):
+            caminho_arquivo = os.path.join(diretorio, arquivo)
+            if arquivo.endswith(".pdf") and os.path.isfile(caminho_arquivo):
+                try:
+                    os.remove(caminho_arquivo)
+                    print(f"[REMOVIDO] {caminho_arquivo}")
+                except Exception as e:
+                    print(f"[ERRO] Não foi possível excluir {caminho_arquivo}: {e}")
