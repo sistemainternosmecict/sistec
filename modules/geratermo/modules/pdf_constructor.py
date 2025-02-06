@@ -13,7 +13,7 @@ import re, os, random, segno
 class PdfConstructor:
     def __init__(self, first_paragraph: str, title: str, data: dict):
         self.numero = random.randint(1000000, 9999999)
-        self.criar_qr(self.numero)
+        # self.criar_qr(self.numero)
         self.title = title
         self.base_color = Color(0.0, 0.50196, 0.50196)
         self.template_pdf = "template.pdf"
@@ -197,12 +197,12 @@ class PdfConstructor:
 
 
         c.setFillColor(gray)
-        self.desenhar_logos(c)
+        # self.desenhar_logos(c)
         c.setFont("Helvetica", 8)
         c.drawString(505, altura - (6 * cm), f"Doc Nº{self.numero}")
 
         c.save()
-        self.delete_qr()
+        # self.delete_qr()
 
     def delete_qr(self):
         os.remove(f"termo_qr_{self.numero}.png")
