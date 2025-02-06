@@ -24,7 +24,7 @@ class Dispositivo:
     def obter_todos_dispositivos(self):
         return self.model.get_all_dispositivos()
     
-    def obter_dispositivo_por_serial(self, disp_serial):
+    def obter_dispositivo_por_serial(self, disp_serial:str):
         return self.model.get_dispositivo_by_serial(disp_serial)
     
     def deletar_dispositivo(self, disp_id):
@@ -35,14 +35,16 @@ class GerenciadorDispositivos:
         disp = Dispositivo(dados)
         return disp.criar_dispositivo()
     
-    def atualizar_dispositivo(self, disp_id, novos_dados: dict):
+    def atualizar_dispositivo(self, disp_serial:str, novos_dados: dict):
         disp = Dispositivo()
-        dispositivo_existente = disp.obter_dispositivo_por_serial(novos_dados.get("disp_serial"))
+        dispositivo_existente = disp.obter_dispositivo_por_serial(disp_serial)
+
+        print(disp_serial, novos_dados, dispositivo_existente)
 
         if not dispositivo_existente:
-            return None  # Retorna None se o dispositivo não existir
+            return {"found":False}
 
-        return disp.atualizar_dispositivo(disp_id, novos_dados)
+        return disp.atualizar_dispositivo(dispositivo_existente.disp_id, novos_dados)
     
     def listar_dispositivos(self):
         disp = Dispositivo()

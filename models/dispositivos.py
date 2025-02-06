@@ -37,9 +37,9 @@ class Dispositivo_model(Base):
         novo_dispositivo.disp_desc = disp_desc
         self.session.add(novo_dispositivo)
         self.session.commit()
-        return novo_dispositivo
+        return {"created":True, "new_device_id":novo_dispositivo.disp_id}
 
-    def update_dispositivo(self, disp_id, disp_serial=None, disp_tipo=None, disp_desc=None):
+    def update_dispositivo(self, disp_id:int, disp_serial=None, disp_tipo=None, disp_desc=None):
         dispositivo = self.session.query(Dispositivo_model).filter_by(disp_id=disp_id).first()
         if not dispositivo:
             return None
@@ -50,7 +50,8 @@ class Dispositivo_model(Base):
         if disp_desc:
             dispositivo.disp_desc = disp_desc
         self.session.commit()
-        return dispositivo
+
+        return {"updated":True}
 
     def get_all_dispositivos(self):
         return self.session.query(Dispositivo_model).all()

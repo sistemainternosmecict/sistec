@@ -12,6 +12,7 @@ def create_app():
     from .modules.usuarios import bp_usuarios, bp_niveis_acesso, bp_permissoes, bp_rap
     from .modules.demandas import bp_demandas
     from .modules.termos import bp_termos
+    from .modules.dispositivos import bp_dispositivos
 
     bp_api = Blueprint('api', __name__, url_prefix='/api')
 
@@ -21,6 +22,7 @@ def create_app():
     bp_api.register_blueprint(bp_rap)
     bp_api.register_blueprint(bp_demandas)
     bp_api.register_blueprint(bp_termos)
+    bp_api.register_blueprint(bp_dispositivos)
     app.register_blueprint(bp_api)
 
     return app
