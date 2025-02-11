@@ -1,3 +1,4 @@
+from models.categorias_dispositivos import Categoria_dispositivo_model
 from models.dispositivos import Dispositivo_model
 
 class Dispositivo:
@@ -57,3 +58,72 @@ class GerenciadorDispositivos:
     def remover_dispositivo(self, disp_id):
         disp = Dispositivo()
         return disp.deletar_dispositivo(disp_id)
+
+# class Categoria_dispositivo:
+#     def __init__(self, dados: dict = None):
+#         if dados:
+#             for chave, valor in dados.items():
+#                 setattr(self, chave, valor)
+#         self.model = Categoria_dispositivo_model()
+
+#     def criar_categoria(self):
+#         nova_categoria = self.model.create_categoria(
+#             self.cat_disp_nome,
+#             self.cat_disp_modelo,
+#             self.cat_disp_tipo,
+#             self.cat_disp_desc
+#         )
+#         return nova_categoria
+
+# class Gerenciador_categorias:
+#     def registrar_categoria(self, dados: dict):
+#         categoria = Categoria_dispositivo(dados)
+#         print(categoria)
+#         return categoria.criar_categoria()
+
+class Categoria_dispositivo:
+    def __init__(self, dados: dict = None):
+        if dados:
+            for chave, valor in dados.items():
+                setattr(self, chave, valor)
+        self.model = Categoria_dispositivo_model()
+
+    def criar_categoria(self):
+        nova_categoria = self.model.create_categoria(
+            self.cat_disp_nome,
+            self.cat_disp_modelo,
+            self.cat_disp_tipo,
+            self.cat_disp_desc
+        )
+        return nova_categoria
+
+    def ler_categoria_por_id(self, categoria_id):
+        return dict(self.model.get_categoria_by_id(categoria_id))
+
+
+class Gerenciador_categorias:
+    def __init__(self):
+        self.model = Categoria_dispositivo_model()
+
+    def registrar_categoria(self, dados: dict):
+        categoria = Categoria_dispositivo(dados)
+        return categoria.criar_categoria()
+
+    def listar_todas_categorias(self):
+        obj_list = self.model.get_all_categorias()
+        result_list = []
+        for obj in obj_list:
+            result_list.append(model_to_dict(obj))   
+        return result_list
+
+    def obter_categoria_por_id(self, categoria_id):
+        return model_to_dict(self.model.get_categoria_by_id(categoria_id))
+
+    def atualizar_categoria(self, categoria_id, novos_dados):
+        return self.model.update_categoria(categoria_id, **novos_dados)
+
+    def excluir_categoria(self, categoria_id):
+        return self.model.delete_categoria(categoria_id)
+    
+def model_to_dict(model):
+    return {column: getattr(model, column) for column in model.__table__.columns.keys()}

@@ -1,5 +1,5 @@
 from waitress import serve
-from flskr.app import create_app
+from flskr.app import create_app, app
 from modules.utilidades.ferramentas import Ferramentas
 import sys, os, logging, schedule, time, threading, socket
 
@@ -24,10 +24,10 @@ export_path = "./export"
 if obter_ip() == "172.20.1.108":
     export_path = "/var/www/files"
 
-app = create_app()
+socketio = create_app()
 
 schedule.every(1).hour.do(ferramentas.limpar_pdfs, export_path)
 threading.Thread(target=rodar_scheduler, daemon=True).start()
 
 if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=8082, threads=4)
+    socketio.run(app, host='0.0.0.0', port=8082, debug=True)

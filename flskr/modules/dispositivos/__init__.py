@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
-from modules.dispositivos import GerenciadorDispositivos
+from modules.dispositivos import GerenciadorDispositivos, Gerenciador_categorias, Categoria_dispositivo
 
+bp_categorias_dispositivos = Blueprint('categorias_dispositivos', __name__, url_prefix='/categorias_dispositivos')
 bp_dispositivos = Blueprint('dispositivos', __name__, url_prefix='/dispositivos')
 
 gerenciador = GerenciadorDispositivos()
@@ -48,3 +49,35 @@ def remover_dispositivo(disp_id):
     if not gerenciador.remover_dispositivo(disp_id):
         return jsonify({"erro": "Dispositivo não encontrado"}), 404
     return jsonify({"mensagem": "Dispositivo removido com sucesso"}), 200
+
+@bp_categorias_dispositivos.route("/listar", methods=["GET"])
+def listar_categorias():
+    gc = Gerenciador_categorias()
+    resultado = gc.listar_todas_categorias()
+    return jsonify(resultado)
+
+@bp_categorias_dispositivos.route("/registrar", methods=["POST"])
+def registrar_categoria():
+    dados = request.json
+    gc = Gerenciador_categorias()
+    resultado = gc.registrar_categoria(dados)
+    return jsonify(resultado)
+
+@bp_categorias_dispositivos.route("/buscar/<cat_disp_id>", methods=["GET"])
+def buscar_categoria(cat_disp_id):
+    gc = Gerenciador_categorias()
+    resultado = gc.obter_categoria_por_id(cat_disp_id)
+    return jsonify(resultado)
+
+@bp_categorias_dispositivos.route("/atualizar/<cat_disp_id>", methods=["POST"])
+def atualizar_categoria(cat_disp_id):
+    dados = request.json
+    gc = Gerenciador_categorias()
+    resultado = gc.atualizar_categoria(cat_disp_id, dados)
+    return jsonify(resultado)
+
+@bp_categorias_dispositivos.route("/remover/<cat_disp_id>", methods=["POST"])
+def remover_categoria(cat_disp_id):
+    gc = Gerenciador_categorias()
+    resultado = gc.excluir_categoria(cat_disp_id)
+    return jsonify(resultado)

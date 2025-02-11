@@ -4,6 +4,9 @@ from modules.demandas.autenticadorGDrive import Autenticador
 from modules.demandas.gsheet import GSheetManager
 from modules.utilidades.ferramentas import Ferramentas
 from models.usuarios import Usuario_model
+from models.notificacoes import Notificacao_model
+from flskr.app import socketio
+from datetime import datetime
 import threading
 
 bp_demandas = Blueprint('demandas', __name__, url_prefix='/demandas')
@@ -97,4 +100,33 @@ def registrar_demanda():
     thread_insercao_planilha = threading.Thread(target=executar_insercao_demanda, args=(resultado, dados,))
     thread_insercao_planilha.start()
 
+    socketio.emit("nova_demanda", {"not_message":f"Demanda {resultado['protocolo']} inserida!", "inserted_data":dados, "protocolo":resultado["protocolo"]})
+    modelo_notificacao = Notificacao_model()
+    modelo_notificacao.create(f"Demanda {resultado['protocolo']} inserida!", datetime.now().strftime("%d/%m/%Y"), datetime.now().strftime("%H:%M"), resultado['protocolo'], False)
+
     return jsonify(resultado)
+
+@bp_demandas.route("/notificacoes/listar", methods=["GET"])
+def listar_notificacoes():
+    modelo_notificacao = Notificacao_model()
+    lista = modelo_notificacao.get_all()
+    listao_temp = []
+
+    for notif in lista:
+        listao_temp.append(to_dict(notif))
+
+    return jsonify({"notificacoes":listao_temp})
+
+@bp_demandas.route("/notificacao/marcar/<not_id>")
+def marcar_notificacao(not_id):
+    pass
+
+def to_dict(notificacao):
+        return {
+            "not_id": notificacao.not_id,
+            "not_message": notificacao.not_message,
+            "not_data": notificacao.not_data,
+            "not_hora": notificacao.not_hora,
+            "not_lida": notificacao.not_lida,
+            "not_protocolo":notificacao.not_protocolo
+        }
