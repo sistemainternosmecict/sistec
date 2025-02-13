@@ -1,14 +1,14 @@
 import sys, os, secrets
 from flask import Flask, Blueprint
 from flask_cors import CORS
-from flask_socketio import SocketIO
+# from flask_socketio import SocketIO
 
-app = Flask(__name__)
-CORS(app, origins=["http://192.168.100.131", "http://192.168.100.131:5173", "http://127.20.1.108", "http://localhost"])
-app.secret_key = secrets.token_hex(32)
-socketio = SocketIO(app, cors_allowed_origins="http://192.168.100.131:5173")
+# socketio = SocketIO(app, cors_allowed_origins="http://192.168.100.131:5173")
 
 def create_app():
+    app = Flask(__name__)
+    CORS(app, origins=["http://192.168.100.131", "http://192.168.100.131:5173", "http://127.20.1.108", "http://localhost"])
+    app.secret_key = secrets.token_hex(32)
     root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sys.path.append(os.path.join(root_path, 'modules'))
 
@@ -29,4 +29,4 @@ def create_app():
     bp_api.register_blueprint(bp_categorias_dispositivos)
     app.register_blueprint(bp_api)
 
-    return socketio
+    return app

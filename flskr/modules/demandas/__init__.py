@@ -5,7 +5,7 @@ from modules.demandas.gsheet import GSheetManager
 from modules.utilidades.ferramentas import Ferramentas
 from models.usuarios import Usuario_model
 from models.notificacoes import Notificacao_model
-from flskr.app import socketio
+# from flskr.app import socketio
 from datetime import datetime
 import threading
 
@@ -100,7 +100,7 @@ def registrar_demanda():
     thread_insercao_planilha = threading.Thread(target=executar_insercao_demanda, args=(resultado, dados,))
     thread_insercao_planilha.start()
 
-    socketio.emit("nova_demanda", {"not_message":f"Demanda {resultado['protocolo']} inserida!", "inserted_data":dados, "protocolo":resultado["protocolo"]})
+    # socketio.emit("nova_demanda", {"not_message":f"Demanda {resultado['protocolo']} inserida!", "inserted_data":dados, "protocolo":resultado["protocolo"]})
     modelo_notificacao = Notificacao_model()
     modelo_notificacao.create(f"Demanda {resultado['protocolo']} inserida!", datetime.now().strftime("%d/%m/%Y"), datetime.now().strftime("%H:%M"), resultado['protocolo'], False)
 
