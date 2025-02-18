@@ -30,4 +30,4 @@ schedule.every(1).hour.do(ferramentas.limpar_pdfs, export_path)
 threading.Thread(target=rodar_scheduler, daemon=True).start()
 
 if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=8082, threads=4)
+    serve(app, host='0.0.0.0', port=8082)

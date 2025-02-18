@@ -22,17 +22,18 @@ class Unidade_model(Base):
     __tablename__ = 'tb_unidades'
 
     uni_id = Column(Integer, primary_key=True, autoincrement=True)
+    uni_registro = Column(String(14))
     uni_cod_ue = Column(Integer, nullable=False)
-    uni_designador_categoria = Column(String, nullable=True)
-    uni_nome = Column(String, nullable=False)
+    uni_designador_categoria = Column(String(25), nullable=True)
+    uni_nome = Column(String(100), nullable=False)
     uni_cep = Column(Integer, nullable=False)
-    uni_logradouro = Column(String)
+    uni_logradouro = Column(String(50))
     uni_numero_end = Column(Integer)
-    uni_bairro = Column(String)
+    uni_bairro = Column(String(50))
     uni_distrito = Column(Integer)
-    uni_direcao = Column(String)
-    uni_telefone_direcao = Column(String)
-    uni_segmentos = Column(String)
+    uni_direcao = Column(String(50))
+    uni_telefone_direcao = Column(String(12))
+    uni_segmentos = Column(String(100))
     uni_listada = Column(Boolean, default=False)
 
     def __init__(self):
@@ -51,17 +52,23 @@ class Unidade_model(Base):
         res = {"msg":"Registro realizado!", "registro":True, "id_registrado":self.uni_id}
         return res
 
-    def buscar_por_id(self, id):
-        unidade = self.session.query(Unidade_model).filter_by(uni_id = id).first()
+    def buscar_por_id(self, id:int):
+        unidade = self.session.query(Unidade_model).filter(Unidade_model.uni_id == id).first()
         if unidade:
             return {'unidade':unidade, 'encontrado':True}
         return {'unidade':None, 'encontrado':False}
 
-    def buscar_por_cod_ue(self, uni_cod_ue):
-        return self.session.query(Unidade_model).filter(Unidade_model.uni_cod_ue == uni_cod_ue).first()
+    def buscar_por_cod_ue(self, uni_cod_ue:int):
+        unidade = self.session.query(Unidade_model).filter(Unidade_model.uni_cod_ue == uni_cod_ue).first()
+        if unidade:
+            return {'unidade':unidade, 'encontrado':True}
+        return {'unidade':None, 'encontrado':False}
 
-    def buscar_por_categoria(self, designador_categoria):
-        return self.session.query(Unidade_model).filter(Unidade_model.uni_designador_categoria == designador_categoria).all()
+    def buscar_por_categoria(self, designador_categoria:str):
+        unidades =  self.session.query(Unidade_model).filter(Unidade_model.uni_designador_categoria == designador_categoria).all()
+        if unidades:
+            return {'unidades':unidades, 'encontrado':True}
+        return {'unidades':None, 'encontrado':False}
 
     def ler_todos(self, ordem='uni_id'):
         if ordem == 'uni_cod_ue':
@@ -70,34 +77,35 @@ class Unidade_model(Base):
             return self.session.query(Unidade_model).order_by(Unidade_model.uni_nome).all()
         return self.session.query(Unidade_model).order_by(Unidade_model.uni_id).all()
 
-    def atualizar_unidade(self, uni_id, **kwargs):
-        unidade = self.buscar_por_id(uni_id)
+    def atualizar_unidade(self, updates:dict):
+        unidade = self.buscar_por_id(updates['uni_id'])
         if unidade:
-            for key, value in kwargs.items():
-                setattr(unidade, key, value)
+            for key, value in updates.items():
+                setattr(unidade['unidade'], key, value)
             self.session.commit()
-        return unidade
+            return {'atualizado':True}
+        return {'atualizado':False}
 
-    def remover_unidade(self) -> dict:
-        print(self)
+    def remover_unidade(self, unidade) -> dict:
         res = { "msg":"Registro não pode ser removido!", "removido":False }
-        if self.uni_id > 0:
-            self.session.delete(self)
-            self.session.flush()
+        if unidade:
+            self.session.delete(unidade)
             self.session.commit()
             res = { "msg":"Registro removido!", "removido":True }
         return res
 
-    def ativar_unidade(self, uni_id):
+    def ativar_unidade(self, uni_id:int):
         unidade = self.buscar_por_id(uni_id)
         if unidade:
-            unidade.uni_listada = True
+            unidade['unidade'].uni_listada = True
             self.session.commit()
-        return unidade
+            return {"ativada":True, "msg":"Unidade ativada com sucesso!"}
+        return {"ativada":False, "msg":"A unidade não pôde ser ativada."}
 
-    def desativar_unidade(self, uni_id):
+    def desativar_unidade(self, uni_id:int):
         unidade = self.buscar_por_id(uni_id)
         if unidade:
-            unidade.uni_listada = False
+            unidade['unidade'].uni_listada = False
             self.session.commit()
-        return unidade
+            return {"ativada":False, "msg":"Unidade desativada com sucesso!"}
+        return {"ativada":True, "msg":"A unidade não pôde ser desativada."}
