@@ -7,7 +7,6 @@ bp_termos = Blueprint('termos', __name__, url_prefix='/termos')
 
 def list_pdfs(directory):
     export_path = os.path.join(directory, "export")
-    print(export_path)
     if not os.path.exists(export_path):
         return {"error": "Pasta 'export' não encontrada"}
     
@@ -27,7 +26,6 @@ def list_pdfs(directory):
 
 def limpar_pdfs():
     if not os.path.isdir("./export"):
-        print(f"O diretório './export' não existe ou não é válido.")
         return
 
     for arquivo in os.listdir("./export"):

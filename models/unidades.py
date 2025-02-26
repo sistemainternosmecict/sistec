@@ -30,7 +30,7 @@ class Unidade_model(Base):
     uni_logradouro = Column(String(50))
     uni_numero_end = Column(Integer)
     uni_bairro = Column(String(50))
-    uni_distrito = Column(Integer)
+    uni_distrito = Column(String(2))
     uni_direcao = Column(String(50))
     uni_telefone_direcao = Column(String(12))
     uni_segmentos = Column(String(100))
@@ -47,10 +47,52 @@ class Unidade_model(Base):
         return f"<Unidade(uni_id={self.uni_id}, uni_nome='{self.uni_nome}', uni_cod_ue={self.uni_cod_ue})>"
 
     def criar_unidade(self):
-        self.session.add(self)
-        self.session.commit()
-        res = {"msg":"Registro realizado!", "registro":True, "id_registrado":self.uni_id}
-        return res
+        unidade_existente = self.session.query(self.__class__).filter_by(uni_nome=self.uni_nome).first()
+        
+        if unidade_existente:
+            return {"msg": "Unidade com este nome já existe!", "registro": False}
+        
+        # unidade_existente = self.session.query(self.__class__).filter_by(uni_cod_ue=self.uni_cod_ue).first()
+        
+        # if unidade_existente:
+        #     return {"msg": "Unidade com este código UE já existe!", "registro": False}
+        
+        todos_os_registros = self.ler_todos("uni_cod_ue")
+
+        codigos = [reg.uni_cod_ue for reg in todos_os_registros]
+
+        if self.uni_cod_ue in codigos:
+            index = codigos.index(self.uni_cod_ue)
+
+            primeira_lista = todos_os_registros[:index]
+            segunda_lista = todos_os_registros[index:]
+
+            nova_unidade = Unidade_model()
+            nova_unidade.uni_cod_ue = self.uni_cod_ue
+            nova_unidade.uni_registro = self.uni_registro
+            nova_unidade.uni_designador_categoria = self.uni_designador_categoria
+            nova_unidade.uni_nome = self.uni_nome
+            nova_unidade.uni_cep = self.uni_cep
+            nova_unidade.uni_logradouro = self.uni_logradouro
+            nova_unidade.uni_numero_end = self.uni_numero_end
+            nova_unidade.uni_bairro = self.uni_bairro
+            nova_unidade.uni_distrito = self.uni_distrito
+            nova_unidade.uni_direcao = self.uni_direcao
+            nova_unidade.uni_telefone_direcao = self.uni_telefone_direcao
+            nova_unidade.uni_segmentos = self.uni_segmentos
+            nova_unidade.uni_listada = self.uni_listada
+
+            for unidade in segunda_lista:
+                unidade.uni_cod_ue += 1
+        
+            self.session.add(nova_unidade)
+            self.session.commit()
+            return {"msg": "Registro realizado!", "registro": True, "id_registrado": nova_unidade.uni_id}
+        else:
+            self.session.add(self)
+            self.session.commit()
+            return {"msg": "Registro realizado!", "registro": True, "id_registrado": self.uni_id}
+
 
     def buscar_por_id(self, id:int):
         unidade = self.session.query(Unidade_model).filter(Unidade_model.uni_id == id).first()

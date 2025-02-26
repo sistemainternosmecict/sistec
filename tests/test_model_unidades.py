@@ -5,9 +5,9 @@ def construct_model(com_id:bool=False) -> Unidade_model:
     if com_id:
         model.uni_id = 10
 
-    model.uni_cod_ue = 17
+    model.uni_cod_ue = 5
     model.uni_designador_categoria = "E.M."
-    model.uni_nome = "Nome de teste"
+    model.uni_nome = "Testando3"
     model.uni_cep = 28994744
     return model
 
@@ -16,7 +16,7 @@ def test_instanciacao_do_modelo():
     assert type(instancia) == Unidade_model
 
 def test_insercao_normal():
-    esperado = { "msg":"Registro realizado!", "registro":True, "id_registrado":10 }
+    esperado = { "msg":"Registro realizado!", "registro":True, "id_registrado":51 }
     instancia = construct_model()
     resultado = instancia.criar_unidade()
     assert resultado == esperado

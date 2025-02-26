@@ -1,9 +1,6 @@
 import sys, os, secrets
 from flask import Flask, Blueprint
 from flask_cors import CORS
-# from flask_socketio import SocketIO
-
-# socketio = SocketIO(app, cors_allowed_origins="http://192.168.100.131:5173")
 
 def create_app():
     app = Flask(__name__)
@@ -16,6 +13,7 @@ def create_app():
     from .modules.demandas import bp_demandas
     from .modules.termos import bp_termos
     from .modules.dispositivos import bp_dispositivos, bp_categorias_dispositivos
+    from .modules.unidades import bp_unidades, bp_salas
 
     bp_api = Blueprint('api', __name__, url_prefix='/api')
 
@@ -27,6 +25,9 @@ def create_app():
     bp_api.register_blueprint(bp_termos)
     bp_api.register_blueprint(bp_dispositivos)
     bp_api.register_blueprint(bp_categorias_dispositivos)
+    bp_api.register_blueprint(bp_unidades)
+    bp_api.register_blueprint(bp_salas)
+
     app.register_blueprint(bp_api)
 
     return app

@@ -13,11 +13,6 @@ def obter_ip():
         print(f"Erro ao obter IP: {e}")
         return None
 
-def rodar_scheduler():
-    while True:
-        schedule.run_pending()
-        time.sleep(60)
-
 ferramentas = Ferramentas()
 export_path = "./export"
 
@@ -25,9 +20,6 @@ if obter_ip() == "172.20.1.108":
     export_path = "/var/www/files"
 
 app = create_app()
-
-schedule.every(1).hour.do(ferramentas.limpar_pdfs, export_path)
-threading.Thread(target=rodar_scheduler, daemon=True).start()
 
 if __name__ == '__main__':
     serve(app, host='0.0.0.0', port=8082)
