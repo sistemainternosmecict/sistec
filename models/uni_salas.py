@@ -21,15 +21,15 @@ class Sala_model(Base):
 
     id_unico_sala = Column(Integer, primary_key=True, autoincrement=True)
     numero_sala = Column(Integer)
-    comprimento_sala = Column(Float, nullable=False)
+    sala_andar = Column(Integer)
     largura_sala = Column(Float, nullable=False)
+    comprimento_sala = Column(Float, nullable=False)
     qnt_entradas = Column(Integer)
-    qnt_portas = Column(Integer)
+    largura_porta = Column(Float)
     qnt_janelas = Column(Integer)
     qnt_tomadas = Column(Integer)
     internet = Column(Boolean)
     tipo_sala = Column(String(50), nullable=False)
-    sala_andar = Column(Integer)
     uni_id = Column(Integer, nullable=False)
 
     def __init__(self):

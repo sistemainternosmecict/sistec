@@ -8,7 +8,14 @@ from reportlab.lib.utils import ImageReader
 from PIL import Image
 from PyPDF2 import PdfReader, PdfWriter, PageObject
 from datetime import datetime
-import re, os, random, segno
+import re, os, random, segno, socket
+
+def obter_ip():
+    try:
+        return socket.gethostbyname(socket.gethostname())  # Obtém o IP da máquina
+    except Exception as e:
+        print(f"Erro ao obter IP: {e}")
+        return None
 
 class PdfConstructor:
     def __init__(self, first_paragraph: str, title: str, data: dict):
@@ -19,6 +26,8 @@ class PdfConstructor:
         self.template_pdf = "template.pdf"
         self.temp_pdf = "temp.pdf"
         self.export_folder = "export"
+        if obter_ip() == "172.20.1.108":
+            self.export_folder = "/var/www/files"
         self.first_paragraph = first_paragraph
         self.text_list = [
             "O equipamento deverá ser usado ÚNICO e EXCLUSIVAMENTE a serviço da SMECICT tendo em vista a atividade a ser exercida pelo USUÁRIO;",
@@ -45,8 +54,9 @@ class PdfConstructor:
         self.merge_pdf(self.template_pdf, self.temp_pdf, self.export_pdf)
 
     def criar_qr(self, numero:int):
-        url = f"http://sistec/api/termos/buscar/{numero}"
-        # url = f"http://sistec/api/usuarios/listar"
+        url = ""
+        if obter_ip() == "172.20.1.108":
+            url = f"http://172.20.1.108/files/{numero}"
         self.test = segno.make(url)
         self.test.save(f"termo_qr_{numero}.png", scale=2)
 

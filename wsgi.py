@@ -1,7 +1,7 @@
 from waitress import serve
 from flskr.app import create_app
 from modules.utilidades.ferramentas import Ferramentas
-import sys, os, logging, schedule, time, threading, socket
+import sys, os, logging, socket
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'flskr'))
 logging.basicConfig(level=logging.INFO)
