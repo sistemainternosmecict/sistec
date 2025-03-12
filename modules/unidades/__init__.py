@@ -77,25 +77,37 @@ class Sala:
         self.qnt_portas = dados.get('qnt_portas') if 'qnt_portas' in dados else 0
         self.qnt_janelas = dados.get('qnt_janelas') if 'qnt_janelas' in dados else 0
         self.qnt_tomadas = dados.get('qnt_tomadas') if 'qnt_tomadas' in dados else 0
-        self.internet = dados.get('internet') if 'internet' in dados else 0
+        self.internet = dados.get('internet') if 'internet' in dados else False
         self.tipo_sala = dados.get('tipo_sala') if 'tipo_sala' in dados else None
         self.sala_andar = dados.get('sala_andar') if 'sala_andar' in dados else 0
         self.uni_id = dados.get('uni_id') if 'uni_id' in dados else None
+        self.provedor = dados.get('provedor') if 'provedor' in dados else None
+        self.serie_ano_manha = dados.get('serie_ano_manha') if 'serie_ano_manha' in dados else None
+        self.serie_ano_tarde = dados.get('serie_ano_tarde') if 'serie_ano_tarde' in dados else None
+        self.serie_ano_noite = dados.get('serie_ano_noite') if 'serie_ano_noite' in dados else None
+        self.capacidade_reg_manha = dados.get('capacidade_reg_manha') if 'capacidade_reg_manha' in dados else None
+        self.capacidade_reg_tarde = dados.get('capacidade_reg_tarde') if 'capacidade_reg_manha' in dados else None
 
     def criar(self):
         sala_model = Sala_model()
 
-        sala_model.comprimento_sala=self.comprimento_sala,
-        sala_model.largura_sala=self.largura_sala,
-        sala_model.tipo_sala=self.tipo_sala,
+        sala_model.comprimento_sala=self.comprimento_sala
+        sala_model.largura_sala=self.largura_sala
+        sala_model.tipo_sala=self.tipo_sala
         sala_model.uni_id=self.uni_id
-        # sala_model.numero_sala=self.numero_sala,
-        # sala_model.qnt_entradas=self.qnt_entradas,
-        # sala_model.qnt_portas=self.qnt_portas,
-        # sala_model.qnt_janelas=self.qnt_janelas,
-        # sala_model.qnt_tomadas=self.qnt_tomadas,
-        # sala_model.internet=self.internet,
-        # sala_model.sala_andar=self.sala_andar,
+        sala_model.numero_sala=self.numero_sala
+        sala_model.qnt_entradas=self.qnt_entradas
+        sala_model.qnt_portas=self.qnt_portas
+        sala_model.qnt_janelas=self.qnt_janelas
+        sala_model.qnt_tomadas=self.qnt_tomadas
+        sala_model.internet=self.internet
+        sala_model.sala_andar=self.sala_andar
+        sala_model.provedor=self.provedor
+        sala_model.serie_ano_manha=self.serie_ano_manha
+        sala_model.serie_ano_tarde=self.serie_ano_tarde
+        sala_model.serie_ano_noite=self.serie_ano_noite
+        sala_model.capacidade_reg_manha=self.capacidade_reg_manha
+        sala_model.capacidade_reg_tarde=self.capacidade_reg_tarde
 
         return sala_model.criar_sala()
 
@@ -109,7 +121,32 @@ class Sala:
 
     def ler_todas(self, ordem='id_unico_sala'):
         sala_model = Sala_model()
-        return sala_model.ler_todas(ordem)
+        salas = sala_model.ler_todas(ordem)
+        lista = []
+        for item in salas:
+            json = {
+                "id_unico_sala": item.id_unico_sala,
+                "tipo_sala": item.tipo_sala,
+                "numero_sala": item.numero_sala,
+                "sala_andar": item.sala_andar,
+                "largura_sala":item.largura_sala,
+                "comprimento_sala":item.comprimento_sala,
+                "qnt_entradas":item.qnt_entradas,
+                "largura_porta":item.largura_porta,
+                "qnt_janelas":item.qnt_janelas,
+                "qnt_tomadas":item.qnt_tomadas,
+                "internet":item.internet,
+                "uni_id":item.uni_id,
+                "provedor":item.provedor,
+                "serie_ano_manha":item.serie_ano_manha,
+                "serie_ano_tarde":item.serie_ano_tarde,
+                "serie_ano_noite":item.serie_ano_noite,
+                "capacidade_reg_manha":item.capacidade_reg_manha,
+                "capacidade_reg_tarde":item.capacidade_reg_tarde
+            }
+
+            lista.append(json)
+        return lista
 
     def atualizar(self, updates):
         sala_model = Sala_model()

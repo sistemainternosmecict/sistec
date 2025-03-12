@@ -25,14 +25,13 @@ class Lista_rh:
             }
 
             self.__funcionarios.append(registro)
-        # print(self.__funcionarios)
     
     def buscar_por_matricula(self, matricula):
         matricula_temp = matricula.split('-')[0]
         matricula_temp_sem_ultimo = matricula_temp[:-1]
 
-        resultado1 = next((funcionario for funcionario in self.__funcionarios if funcionario['matricula'] == matricula_temp_sem_ultimo), None)
-        resultado2 = next((funcionario for funcionario in self.__funcionarios if funcionario['matricula'] == matricula_temp), None)
+        resultado1 = next((funcionario for funcionario in self.__funcionarios if str(funcionario['matricula']) == matricula_temp_sem_ultimo), None)
+        resultado2 = next((funcionario for funcionario in self.__funcionarios if str(funcionario['matricula']) == matricula_temp), None)
 
         if resultado1:
             return resultado1

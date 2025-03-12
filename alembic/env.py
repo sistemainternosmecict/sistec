@@ -5,27 +5,11 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from models.usuarios import Base
-
-from dotenv import load_dotenv
-import os
-
-# Carregar as variáveis do .env
-load_dotenv()
-
-# Construir a URL do banco de dados usando as variáveis de ambiente
-db_user = os.getenv("DB_USER")
-db_password = os.getenv("DB_PASSWORD")
-db_host = os.getenv("DB_HOST", "localhost")
-db_port = os.getenv("DB_PORT")
-db_name = os.getenv("DB_NAME")
-
-db_url = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+from models.uni_salas import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-config.set_main_option("sqlalchemy.url", db_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -56,7 +40,6 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,

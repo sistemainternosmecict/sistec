@@ -27,7 +27,7 @@ class PdfConstructor:
         self.temp_pdf = "temp.pdf"
         self.export_folder = "export"
         if obter_ip() == "172.20.1.108":
-            self.export_folder = "/var/www/files"
+            self.export_folder = "/var/www/files/termos_chromebooks/"
         self.first_paragraph = first_paragraph
         self.text_list = [
             "O equipamento deverá ser usado ÚNICO e EXCLUSIVAMENTE a serviço da SMECICT tendo em vista a atividade a ser exercida pelo USUÁRIO;",
@@ -54,7 +54,7 @@ class PdfConstructor:
         self.merge_pdf(self.template_pdf, self.temp_pdf, self.export_pdf)
 
     def criar_qr(self, numero:int):
-        url = f"http://172.20.1.108/files/{numero}.pdf"
+        url = f"http://172.20.1.108/files/termos_chromebooks/{numero}.pdf"
         self.test = segno.make(url)
         self.test.save(f"termo_qr_{numero}.png", scale=2)
 

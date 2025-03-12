@@ -22,8 +22,8 @@ class Sala_model(Base):
     id_unico_sala = Column(Integer, primary_key=True, autoincrement=True)
     numero_sala = Column(Integer)
     sala_andar = Column(Integer)
-    largura_sala = Column(Float, nullable=False)
-    comprimento_sala = Column(Float, nullable=False)
+    largura_sala = Column(Float)
+    comprimento_sala = Column(Float)
     qnt_entradas = Column(Integer)
     largura_porta = Column(Float)
     qnt_janelas = Column(Integer)
@@ -31,6 +31,12 @@ class Sala_model(Base):
     internet = Column(Boolean)
     tipo_sala = Column(String(50), nullable=False)
     uni_id = Column(Integer, nullable=False)
+    provedor = Column(String(30))
+    serie_ano_manha = Column(String(15))
+    serie_ano_tarde = Column(String(15))
+    serie_ano_noite = Column(String(15))
+    capacidade_reg_manha = Column(Integer)
+    capacidade_reg_tarde = Column(Integer)
 
     def __init__(self):
         db_url = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"

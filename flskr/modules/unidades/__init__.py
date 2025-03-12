@@ -74,9 +74,9 @@ def buscar_salas_por_uni(uni_id):
 @bp_salas.route('/listar', methods=['GET'])
 def ler_salas():
     ordem = request.args.get('ordem', 'id_unico_sala')
-    sala = Sala_model()
+    sala = Sala({})
     salas = sala.ler_todas(ordem)
-    return jsonify([s.__dict__ for s in salas]), 200
+    return jsonify(salas)
 
 @bp_salas.route('/atualizar/<int:id>', methods=['PUT'])
 def atualizar_sala(id):

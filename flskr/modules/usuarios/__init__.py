@@ -36,6 +36,7 @@ def validar_matricula():
     # matricula_temp_sem_ultimo = matricula_temp[:-1]
     LRH = Lista_rh()
     resultado = LRH.buscar_por_matricula(dados['usuario_matricula'])
+    print("2 -->", resultado)
     if resultado:
         todos_usuarios = GU.obter_todos_os_usuarios()
         if len(todos_usuarios['usuarios']) > 0:
